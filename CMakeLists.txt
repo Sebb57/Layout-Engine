@@ -26,9 +26,10 @@ endif()
 
 
 add_library(Layout SHARED
-    src/GraphicalHooks/GraphicalHooks.cpp
-    src/GraphicalHooks/SFML.cpp
+    # src/GraphicalHooks/GraphicalHooks.cpp
+    # src/GraphicalHooks/SFML.cpp
     src/layout/load.cpp
+    src/Section/addElement.cpp
 )
 
 target_include_directories(Layout

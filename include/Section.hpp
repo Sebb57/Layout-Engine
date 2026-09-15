@@ -29,6 +29,7 @@ class Section {
 
         std::string getData(std::string id);
         //bool draw(GraphicalHook);
+        bool addElement(std::string name, std::unique_ptr<IElement> element);
         
         void open() { if (this->_id != constants::mainWindowName) this->_hidden = !this->_hidden; }
 };

@@ -14,8 +14,19 @@
 
 namespace Layout {
 
+//TODO: remove fast, only temporary
+struct Color {
+    float r = 0;
+    float g = 0;
+    float b = 0;
+    float a = 0;
+    Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {}
+};
+
 class IElement {
     public:
+        virtual ~IElement() = default;
+
         Transform transform;
         int zIndex = 0;
 
