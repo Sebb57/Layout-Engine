@@ -27,6 +27,8 @@ endif()
 
 add_library(Layout SHARED
     src/layout/Layout.cpp
+    src/GraphicalHooks/GraphicalHooks.cpp
+    src/GraphicalHooks/SFML.cpp
 )
 
 target_include_directories(Layout
@@ -49,17 +51,17 @@ set_target_properties(Layout PROPERTIES
 )
 
 
-if(BUILD_TEST_APP)
-    add_executable(Layout-test
-        src/main.cpp
-    )
-    target_compile_options(Layout-test PRIVATE
-        ${COMPILE_FLAGS}
-    )
-    target_link_libraries(Layout-test PRIVATE
-        Layout
-    )
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
-    )
-endif()
+# if(BUILD_TEST_APP)
+#     add_executable(Layout-test
+#         src/main.cpp
+#     )
+#     target_compile_options(Layout-test PRIVATE
+#         ${COMPILE_FLAGS}
+#     )
+#     target_link_libraries(Layout-test PRIVATE
+#         Layout
+#     )
+#     set_target_properties(${PROJECT_NAME} PROPERTIES
+#         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
+#     )
+# endif()
