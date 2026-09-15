@@ -13,6 +13,7 @@
     #include "IElement.hpp"
     #include "GraphicalHooks.hpp"
     #include "Section.hpp"
+    #include "Component.hpp"
     #include <filesystem>
     #include <memory>
     #include <optional>
@@ -24,11 +25,15 @@ namespace Layout {
 class Layout {
     std::unordered_map<std::string, std::unique_ptr<Section>> _sections;
     // std::vector<Event> _events; // TODO: uncomment this
-    GraphicalHooks _graphicalHooks;
     std::optional<Section&> _selected;
     // std::unordered_map<std::string, fonction> _shortcuts; // TODO: shortcuts
+    LibName _graphicalLib = LibName::SFML;
+    GraphicalHooks _graphicalHooks = GraphicalHooks(this->_graphicalLib);
 
     public:
+        Layout() = default;
+        Layout(LibName name) : _graphicalLib(name) { this->_graphicalHooks = GraphicalHooks(this->_graphicalLib); }
+
         void save(std::filesystem::path fp);
         void load(std::filesystem::path fp);
 

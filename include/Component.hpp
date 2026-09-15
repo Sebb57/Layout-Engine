@@ -13,7 +13,11 @@
 
 namespace Layout {
 
-enum class anchorPoints {
+enum class LibName {
+    SFML
+};
+
+enum class AnchorPoints {
     LEFT,
     MID,
     RIGHT
@@ -27,8 +31,8 @@ struct Rect {
 };
 
 struct Transform {
-    anchorPoints AnchX;
-    anchorPoints AnchY;
+    AnchorPoints AnchX;
+    AnchorPoints AnchY;
     Rect Pos;
     Rect Size;
 };

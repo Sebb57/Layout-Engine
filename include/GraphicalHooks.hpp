@@ -13,10 +13,15 @@
 
 namespace Layout {
 
-struct GraphicalHooks { //TODO: give them all a opt struct as param to be able to customize them
-    void drawRect(Rect);
-    void drawImage(Rect);
-    void drawText(Rect);
+class GraphicalHooks { //TODO: give them all a opt struct as param to be able to customize them
+    LibName _graphicalLib;
+
+    public:
+        GraphicalHooks(LibName name) : _graphicalLib(name) {}
+
+        void drawRect(Rect);
+        void drawImage(Rect);
+        void drawText(Rect);
 };
 
 }
