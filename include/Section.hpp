@@ -12,11 +12,12 @@
 #include "IElement.hpp"
 #include <string>
 #include <unordered_map>
+#include <memory>
 
 namespace Layout {
 
 class Section {
-    std::unordered_map<std::string, IElement> _elementMap;
+    std::unordered_map<std::string, std::unique_ptr<IElement>> _elementMap;
     std::string _id;
     bool _hidden;
 
@@ -25,6 +26,8 @@ class Section {
 
         std::string getData(std::string id);
         //bool draw(GraphicalHook);
+        
+        void open() { this->_hidden = !this->_hidden; }
 };
 
 }
