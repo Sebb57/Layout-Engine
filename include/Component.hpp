@@ -17,10 +17,16 @@ enum class LibName {
     SFML
 };
 
-enum class AnchorPoints {
-    LEFT,
+enum class AnchorX {
+    LEFT = 0,
     MID,
     RIGHT
+};
+
+enum class AnchorY {
+    TOP = 0,
+    MID,
+    BOTTOM
 };
 
 struct Rect {
@@ -31,8 +37,8 @@ struct Rect {
 };
 
 struct Transform {
-    AnchorPoints AnchX;
-    AnchorPoints AnchY;
+    AnchorX AnchX;
+    AnchorY AnchY;
     Rect Pos;
     Rect Size;
 };
