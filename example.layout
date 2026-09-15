@@ -1,0 +1,37 @@
+layout = {
+    width = 1920;
+    height = 1080;
+
+    sections = {
+        main = {
+            anchX = left;
+            anchY = middle;
+            pos = { 0, 0, 0, 0 };
+            size = { 30, 30 };
+            elements = {
+                helloWorld = {
+                    type = "text"
+                    content = "hello world"
+                    anchX = middle;
+                    anchY = middle;
+                    pos = { x = 0; y = 0; offsetX = 0; offsetY = 0; };
+                    size = { x = 10; y = 10; };
+                    fillColor = { r = 0.0; g = 255.0; b = 0.0; a = 255.0; };
+                    borderColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
+                    textColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
+                    ZIndex = 1;
+                }
+                rectangleBlue = {
+                    type = "rectangle"
+                    anchX = middle;
+                    anchY = middle;
+                    pos = { x = 0; y = 0; offsetX = 0; offsetY = 0; };
+                    size = { x = 25; y = 25; };
+                    fillColor = { r = 0.0; g = 0.0; b = 255.0; a = 255.0; };
+                    borderColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
+                    ZIndex = 0;
+                }
+            }
+        }
+    }
+}

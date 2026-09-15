@@ -29,6 +29,8 @@ class Layout {
     // std::unordered_map<std::string, fonction> _shortcuts; // TODO: shortcuts
     LibName _graphicalLib = LibName::SFML;
     GraphicalHooks _graphicalHooks = GraphicalHooks(this->_graphicalLib);
+    int _width;
+    int _height;
 
     public:
         Layout() = default;
@@ -45,6 +47,21 @@ class Layout {
 
         void addElem(IElement element, std::string elemId, std::string secId);
         void popElem(std::string elemId, std::string secId);
+
+        class LayoutException : public std::exception {
+            protected:
+                std::string _msg;
+            public:
+                LayoutException(std::string msg) : _msg(msg) {}
+
+                virtual const char* what() const noexcept { return this->_msg.c_str(); }
+        };
+
+        class InvalidConfigException : public LayoutException {
+            public:
+                InvalidConfigException() : LayoutException("Invalid configuration file") {}
+        };
+
 };
 
 }

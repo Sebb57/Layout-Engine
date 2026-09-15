@@ -1,0 +1,22 @@
+/**
+ * @file constants.hpp
+ * @brief project constants
+ *
+ * @author Seb
+ * @date 2026-09-15
+**/
+
+#ifndef CONSTANTS_HPP_
+#define CONSTANTS_HPP_
+
+#include <string>
+
+namespace Layout::constants {
+
+inline constexpr std::string ValidExtention = "layout";
+inline constexpr std::string mainWindowName = "main";
+
+}
+
+#endif /* CONSTANTS_HPP_ */
+

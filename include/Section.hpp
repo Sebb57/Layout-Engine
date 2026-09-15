@@ -10,6 +10,7 @@
 #define SECTION_HPP_
 
 #include "IElement.hpp"
+#include "constants.hpp"
 #include <string>
 #include <unordered_map>
 #include <memory>
@@ -22,12 +23,14 @@ class Section {
     bool _hidden;
 
     public:
+        Section(std::string id, bool hidden) : _id(id), _hidden(hidden) {}
+
         Transform transform;
 
         std::string getData(std::string id);
         //bool draw(GraphicalHook);
         
-        void open() { this->_hidden = !this->_hidden; }
+        void open() { if (this->_id != constants::mainWindowName) this->_hidden = !this->_hidden; }
 };
 
 }
