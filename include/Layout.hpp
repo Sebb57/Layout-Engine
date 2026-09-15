@@ -1,6 +1,6 @@
 /**
- * @file IElement.hpp
- * @brief IElement class
+ * @file Layout.hpp
+ * @brief Layout class
  *
  * @author SkyReox
  * @date 2026-09-15
