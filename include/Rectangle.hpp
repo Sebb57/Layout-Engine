@@ -16,6 +16,7 @@ namespace Layout {
 class Rectangle : public AElement {
     public:
         Rectangle(Color fillColor, Color borderColor) : AElement(fillColor, borderColor) {}
+        ~Rectangle() = default;
 
         void update(float deltaTime) override;
         void draw() override;

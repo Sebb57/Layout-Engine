@@ -20,6 +20,7 @@ class Image : public AElement {
 
     public:
         Image(Color fillColor, Color borderColor, std::string path) : AElement(fillColor, borderColor), _path(path) {}
+        ~Image() = default;
 
         void update(float deltaTime) override;
         void draw() override;

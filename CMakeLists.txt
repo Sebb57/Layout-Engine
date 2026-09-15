@@ -30,6 +30,9 @@ add_library(Layout SHARED
     # src/GraphicalHooks/SFML.cpp
     src/layout/load.cpp
     src/Section/addElement.cpp
+    src/Element/Text.cpp
+    src/Element/Image.cpp
+    src/Element/Rectangle.cpp
 )
 
 target_include_directories(Layout
@@ -52,17 +55,17 @@ set_target_properties(Layout PROPERTIES
 )
 
 
-# if(BUILD_TEST_APP)
-#     add_executable(Layout-test
-#         src/main.cpp
-#     )
-#     target_compile_options(Layout-test PRIVATE
-#         ${COMPILE_FLAGS}
-#     )
-#     target_link_libraries(Layout-test PRIVATE
-#         Layout
-#     )
-#     set_target_properties(${PROJECT_NAME} PROPERTIES
-#         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
-#     )
-# endif()
+if(BUILD_TEST_APP)
+    add_executable(${PROJECT_NAME}
+        src/main.cpp
+    )
+    target_compile_options(${PROJECT_NAME} PRIVATE
+        ${COMPILE_FLAGS}
+    )
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        Layout
+    )
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
+endif()
