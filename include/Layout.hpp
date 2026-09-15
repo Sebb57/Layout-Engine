@@ -25,7 +25,7 @@ namespace Layout {
 class Layout {
     std::unordered_map<std::string, std::unique_ptr<Section>> _sections;
     // std::vector<Event> _events; // TODO: uncomment this
-    std::optional<Section&> _selected;
+    std::optional<Section*> _selected;
     // std::unordered_map<std::string, fonction> _shortcuts; // TODO: shortcuts
     LibName _graphicalLib = LibName::SFML;
     GraphicalHooks _graphicalHooks = GraphicalHooks(this->_graphicalLib);

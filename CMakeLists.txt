@@ -25,39 +25,39 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 
-add_library(mylib SHARED
-    #TODO: add lib files
+add_library(Layout SHARED
+    src/layout/Layout.cpp
 )
 
-target_include_directories(mylib
+target_include_directories(Layout
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-target_compile_options(mylib PRIVATE
+target_compile_options(Layout PRIVATE
     ${COMPILE_FLAGS}
 )
-target_link_libraries(mylib PRIVATE
+target_link_libraries(Layout PRIVATE
     sfml-graphics
     sfml-window
     sfml-system
     config++
 )
-set_target_properties(mylib PROPERTIES
+set_target_properties(Layout PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
 
 if(BUILD_TEST_APP)
-    add_executable(layout-test
+    add_executable(Layout-test
         src/main.cpp
     )
-    target_compile_options(layout-test PRIVATE
+    target_compile_options(Layout-test PRIVATE
         ${COMPILE_FLAGS}
     )
-    target_link_libraries(layout-test PRIVATE
-        mylib
+    target_link_libraries(Layout-test PRIVATE
+        Layout
     )
     set_target_properties(${PROJECT_NAME} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
