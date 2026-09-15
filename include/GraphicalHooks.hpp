@@ -19,9 +19,9 @@ class GraphicalHooks { //TODO: give them all a opt struct as param to be able to
     public:
         GraphicalHooks(LibName name) : _graphicalLib(name) {}
 
-        void drawRect(Rect);
-        void drawImage(Rect);
-        void drawText(Rect);
+        void drawRect(Transform);
+        void drawImage(Transform);
+        void drawText(Transform);
 };
 
 }

@@ -16,7 +16,7 @@ namespace Layout {
 
 class IElement {
     public:
-        Rect rect;
+        Transform transform;
         int zIndex = 0;
 
         virtual void update(float deltaTime) = 0;

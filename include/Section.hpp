@@ -22,7 +22,7 @@ class Section {
     bool _hidden;
 
     public:
-        Rect rect;
+        Transform transform;
 
         std::string getData(std::string id);
         //bool draw(GraphicalHook);
