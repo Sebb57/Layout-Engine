@@ -13,7 +13,7 @@
 
 namespace Layout::constants {
 
-inline constexpr std::string ValidExtention = "layout";
+inline constexpr std::string ValidExtention = ".layout";
 inline constexpr std::string mainWindowName = "main";
 inline constexpr unsigned FPS_LIMIT = 60;
 

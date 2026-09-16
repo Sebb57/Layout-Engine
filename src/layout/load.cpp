@@ -12,6 +12,7 @@
 #include "Text.hpp"
 #include "Image.hpp"
 #include <filesystem>
+#include <iostream>
 #include <libconfig.h++>
 #include <memory>
 
@@ -53,8 +54,8 @@ Layout::AnchorY resolveAnchorY(const libconfig::Setting& setting)
 
 Layout::Rect parseRect(const libconfig::Setting& setting, bool offsets)
 {
-    float x = 0;
-    float y = 0;
+    double x = 0;
+    double y = 0;
     uint32_t offsetX = 0;
     uint32_t offsetY = 0;
 
@@ -109,7 +110,7 @@ std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting)
     const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
     const libconfig::Setting& textColorSetting = setting.lookup("textColor");
-    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !textColorSetting.isGroup() || setting.lookupValue("content", content))
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !textColorSetting.isGroup() || !setting.lookupValue("content", content))
         throw Layout::Layout::InvalidConfigException();
 
     Layout::Color borderColor = parseColor(borderColorSetting);
@@ -193,7 +194,7 @@ void Layout::Layout::load(std::filesystem::path fp)
 {
     if (!std::filesystem::exists(fp) || fp.extension() != constants::ValidExtention)
         throw Layout::Layout::InvalidConfigException();
-
+    
     libconfig::Config cfg;
     cfg.readFile(fp.c_str());
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <libconfig.h++>
 #include "Layout.hpp"
 
 int main()
@@ -8,8 +9,8 @@ int main()
     try {
         layout.load("example.layout");
         std::cout << "Layout Engine" << std::endl;
-    } catch (std::exception& e) {
-        std::cerr << e.what() << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "std::exception: " << e.what() << std::endl;
         return -1;
     }
     return 0;
