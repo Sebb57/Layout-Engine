@@ -376,10 +376,14 @@ void Layout::SFML::drawImage(Transform transform, std::filesystem::path path) co
     sf::Sprite sprite;
     sf::Vector2u windowSize = this->_window->getSize();
     sf::Vector2u anchorPoint = getAnchorPoint<sf::Vector2u>(transform, windowSize);
+    sf::Vector2u textureSize = texture.getSize();
+    float scale = (windowSize.x * transform.Size.x + transform.Size.offsetX) / textureSize.x;
+    sf::Vector2f spriteAnchorPoint = getAnchorPoint<sf::Vector2f>(transform, {textureSize.x * scale, textureSize.y * scale});
+
     sprite.setPosition(getPosFromTransform(transform.Pos, windowSize, anchorPoint));
-    // sprite.setTexture(texture);
-    // sprite.setPosition(normalizedOrigin);
-    // sprite.setOrigin({textureSize.x / 2.0f, textureSize.y / 2.0f});
+    sprite.setScale({scale, scale});
+    sprite.setTexture(texture);
+    sprite.setOrigin(spriteAnchorPoint);
     // sprite.setRotation(angle);
     // sprite.setScale({scale, scale});
 
