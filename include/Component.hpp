@@ -62,6 +62,7 @@ struct Event {
         Shift,
         Control,
         Alt,
+        Enter,
         Left,
         Right,
         Up,

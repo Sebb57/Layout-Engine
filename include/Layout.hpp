@@ -11,7 +11,6 @@
     #define LAYOUT_HPP_
 
     #include "IElement.hpp"
-    #include "GraphicalHooks.hpp"
     #include "Section.hpp"
     #include "Component.hpp"
     #include <filesystem>
@@ -28,13 +27,13 @@ class Layout {
     std::optional<Section*> _selected;
     // std::unordered_map<std::string, fonction> _shortcuts; // TODO: shortcuts
     LibName _graphicalLib = LibName::SFML;
-    GraphicalHooks _graphicalHooks = GraphicalHooks(this->_graphicalLib);
     int _width;
     int _height;
+    // TODO: dynamic lib
 
     public:
         Layout() = default;
-        Layout(LibName name) : _graphicalLib(name) { this->_graphicalHooks = GraphicalHooks(this->_graphicalLib); }
+        Layout(LibName name) : _graphicalLib(name) {}
 
         void save(std::filesystem::path fp);
         void load(std::filesystem::path fp);
