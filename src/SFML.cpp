@@ -47,22 +47,14 @@ T getAnchorPoint(Layout::Transform transform, T windowSize)
     return res;
 }
 
-sf::Vector2f getPosFromTransform(Layout::Rect rect, sf::Vector2u windowSize, sf::Vector2u anchorPoint)
+inline sf::Vector2f getPosFromTransform(Layout::Rect rect, sf::Vector2u windowSize, sf::Vector2u anchorPoint)
 {
-    sf::Vector2f res;
-
-    res.x = anchorPoint.x + windowSize.x * rect.x + rect.offsetX;
-    res.y = anchorPoint.y + windowSize.y * rect.y + rect.offsetY;
-    return res;
+    return {anchorPoint.x + windowSize.x * rect.x + rect.offsetX, anchorPoint.y + windowSize.y * rect.y + rect.offsetY};
 }
 
-sf::Vector2f getSizeFromTransform(Layout::Rect rect, sf::Vector2u windowSize)
+inline sf::Vector2f getSizeFromTransform(Layout::Rect rect, sf::Vector2u windowSize)
 {
-    sf::Vector2f res;
-
-    res.x = windowSize.x * rect.x + rect.offsetX;
-    res.y = windowSize.y * rect.y + rect.offsetY;
-    return res;
+    return {windowSize.x * rect.x + rect.offsetX, windowSize.y * rect.y + rect.offsetY};
 }
 
 // sf::Color colorNormalize(arcade::RGBA color)
