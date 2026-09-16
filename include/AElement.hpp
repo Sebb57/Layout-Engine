@@ -10,6 +10,7 @@
 #define AELEMENT_HPP_
 
 #include "IElement.hpp"
+#include "Color.hpp"
 
 namespace Layout {
 
