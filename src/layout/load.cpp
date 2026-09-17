@@ -1,0 +1,235 @@
+/**
+ * @file Layout.cpp
+ * @brief layout load logic
+ *
+ * @author Seb
+ * @date 2026-09-15
+**/
+
+#include "Layout.hpp"
+#include "constants.hpp"
+#include "Rectangle.hpp"
+#include "Text.hpp"
+#include "Image.hpp"
+#include <filesystem>
+#include <iostream>
+#include <libconfig.h++>
+#include <memory>
+
+namespace {
+
+Layout::AnchorX resolveAnchorX(const libconfig::Setting& setting)
+{
+    std::string anch;
+
+    if (!setting.lookupValue("anchX", anch))
+        throw Layout::Layout::InvalidConfigException();
+
+    if (anch == "left")
+        return Layout::AnchorX::LEFT;
+    if (anch == "middle")
+        return Layout::AnchorX::MID;
+    if (anch == "right")
+        return Layout::AnchorX::RIGHT;
+
+    throw Layout::Layout::InvalidConfigException();
+}
+
+Layout::AnchorY resolveAnchorY(const libconfig::Setting& setting)
+{
+    std::string anch;
+
+    if (!setting.lookupValue("anchY", anch))
+        throw Layout::Layout::InvalidConfigException();
+
+    if (anch == "top")
+        return Layout::AnchorY::TOP;
+    if (anch == "middle")
+        return Layout::AnchorY::MID;
+    if (anch == "bottom")
+        return Layout::AnchorY::BOTTOM;
+
+    throw Layout::Layout::InvalidConfigException();
+}
+
+Layout::Rect parseRect(const libconfig::Setting& setting, bool offsets)
+{
+    double x = 0;
+    double y = 0;
+    uint32_t offsetX = 0;
+    uint32_t offsetY = 0;
+
+    if (!setting.lookupValue("x", x) || !setting.lookupValue("y", y))
+        throw Layout::Layout::InvalidConfigException();
+    if (offsets && (!setting.lookupValue("offsetX", offsetX) || !setting.lookupValue("offsetY", offsetY)))
+        throw Layout::Layout::InvalidConfigException();
+
+    return Layout::Rect(x, y, offsetX, offsetY);
+}
+
+Layout::Color parseColor(const libconfig::Setting& setting)
+{
+    float r = 0;
+    float g = 0;
+    float b = 0;
+    float a = 0;
+
+    if (!setting.lookupValue("r", r) || !setting.lookupValue("g", g) ||
+        !setting.lookupValue("b", b) || !setting.lookupValue("a", a))
+        throw Layout::Layout::InvalidConfigException();
+
+    if (r < 0 || r > 255 || g < 0 || g > 255 ||
+        b < 0 || b > 255 || a < 0 || a > 255)
+        throw Layout::Layout::InvalidConfigException();
+
+    return Layout::Color(r, g, b, a);
+}
+
+std::unique_ptr<Layout::IElement> parseRectangle(const libconfig::Setting& setting)
+{
+    if (!setting.exists("fillColor") || !setting.exists("borderColor"))
+        throw Layout::Layout::InvalidConfigException();
+
+    const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
+    const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup())
+        throw Layout::Layout::InvalidConfigException();
+
+    Layout::Color borderColor = parseColor(borderColorSetting);
+    Layout::Color fillColor = parseColor(fillColorSetting);
+
+    return std::make_unique<Layout::Rectangle>(fillColor, borderColor);
+}
+
+std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting)
+{
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("textColor") || !setting.exists("content"))
+        throw Layout::Layout::InvalidConfigException();
+
+    std::string content;
+    const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
+    const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
+    const libconfig::Setting& textColorSetting = setting.lookup("textColor");
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !textColorSetting.isGroup() || !setting.lookupValue("content", content))
+        throw Layout::Layout::InvalidConfigException();
+
+    Layout::Color borderColor = parseColor(borderColorSetting);
+    Layout::Color fillColor = parseColor(fillColorSetting);
+    Layout::Color textColor = parseColor(textColorSetting);
+
+    return std::make_unique<Layout::Text>(fillColor, borderColor, textColor, content);
+}
+
+std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting)
+{
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("path"))
+        throw Layout::Layout::InvalidConfigException();
+
+    std::string path;
+    const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
+    const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("path", path))
+        throw Layout::Layout::InvalidConfigException();
+
+    Layout::Color borderColor = parseColor(borderColorSetting);
+    Layout::Color fillColor = parseColor(fillColorSetting);
+
+    return std::make_unique<Layout::Image>(fillColor, borderColor, path);
+
+}
+
+std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting)
+{
+    std::string type;
+
+    if (!setting.lookupValue("type", type))
+        throw Layout::Layout::InvalidConfigException();
+
+    if (type == "rectangle")
+        return parseRectangle(setting);
+    if (type == "text")
+        return parseText(setting);
+    if (type == "image")
+        return parseImage(setting);
+
+    throw Layout::Layout::InvalidConfigException();
+}
+
+std::unique_ptr<Layout::Section> parseSection(const libconfig::Setting& setting, const std::string& name)
+{
+    auto newSection = std::make_unique<Layout::Section>(name, true);
+
+    if (!setting.exists("pos") || !setting.exists("size") || !setting.exists("elements"))
+        throw Layout::Layout::InvalidConfigException();
+
+    const libconfig::Setting& pos = setting.lookup("pos");
+    const libconfig::Setting& size = setting.lookup("size");
+    const libconfig::Setting& elements = setting.lookup("elements");
+    if (!pos.isGroup() || !size.isGroup() || !elements.isGroup())
+        throw Layout::Layout::InvalidConfigException();
+
+    newSection->transform.AnchX = resolveAnchorX(setting);
+    newSection->transform.AnchY = resolveAnchorY(setting);
+    newSection->transform.Pos = parseRect(pos, true);
+    newSection->transform.Size = parseRect(size, false);
+
+    for (int i = 0; i < elements.getLength(); ++i) {
+        const libconfig::Setting& elementSetting = elements[i];
+        const std::string elementName = elementSetting.getName();
+        if (!elementSetting.isGroup())
+            throw Layout::Layout::InvalidConfigException();
+
+        auto element = parseElement(elementSetting);
+        if (!element)
+            throw Layout::Layout::InvalidConfigException();
+        if (!newSection->addElement(elementName, std::move(element)))
+            throw Layout::Layout::InvalidConfigException();
+    }
+    return newSection;
+}
+
+}
+
+void Layout::Layout::load(std::filesystem::path fp)
+{
+    if (!std::filesystem::exists(fp) || fp.extension() != constants::ValidExtention)
+        throw Layout::Layout::InvalidConfigException();
+    
+    libconfig::Config cfg;
+    cfg.readFile(fp.c_str());
+
+    if (!cfg.exists("layout"))
+        throw Layout::Layout::InvalidConfigException();
+    const libconfig::Setting& layout = cfg.lookup("layout");
+
+    if (!layout.lookupValue("width", this->_width) || !layout.lookupValue("height", this->_height))
+        throw Layout::Layout::InvalidConfigException();
+    if (this->_width <= 0 || this->_height <= 0)
+        throw Layout::Layout::InvalidConfigException();
+
+    if (!layout.exists("sections"))
+        throw Layout::Layout::InvalidConfigException();
+    const libconfig::Setting& sections = layout.lookup("sections");
+    if (!sections.isGroup())
+        throw Layout::Layout::InvalidConfigException();
+
+    bool mainFound = false;
+    for (int i = 0; i < sections.getLength(); ++i) {
+        const libconfig::Setting& section = sections[i];
+        const std::string category = section.getName();
+        if (!section.isGroup())
+            throw Layout::Layout::InvalidConfigException();
+
+        if (category == constants::mainWindowName)
+            mainFound = true;
+
+        auto newSection = parseSection(section, category);
+        if (!newSection)
+            throw Layout::Layout::InvalidConfigException();
+        if (this->_sections.contains(category))
+            throw Layout::Layout::InvalidConfigException();
+        this->_sections.emplace(category, std::move(newSection));
+    }
+    if (!mainFound)
+        throw Layout::Layout::InvalidConfigException();
+}
