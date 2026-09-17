@@ -13,7 +13,6 @@
 #include "Text.hpp"
 #include "Image.hpp"
 #include <filesystem>
-#include <iostream>
 #include <libconfig.h++>
 #include <memory>
 
@@ -88,52 +87,55 @@ Layout::Color parseColor(const libconfig::Setting& setting)
 
 std::unique_ptr<Layout::IElement> parseRectangle(const libconfig::Setting& setting, Layout::Transform transform)
 {
-    if (!setting.exists("fillColor") || !setting.exists("borderColor"))
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("ZIndex"))
         throw Layout::Layout::InvalidConfigException();
 
     const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
-    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup())
+    int ZIndex;
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("ZIndex", ZIndex))
         throw Layout::Layout::InvalidConfigException();
 
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color fillColor = parseColor(fillColorSetting);
 
-    return std::make_unique<Layout::Rectangle>(transform, fillColor, borderColor);
+    return std::make_unique<Layout::Rectangle>(transform, fillColor, borderColor, ZIndex);
 }
 
 std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting, Layout::Transform transform)
 {
-    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("textColor") || !setting.exists("content"))
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("textColor") || !setting.exists("content") || !setting.exists("ZIndex"))
         throw Layout::Layout::InvalidConfigException();
 
     std::string content;
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
     const libconfig::Setting& textColorSetting = setting.lookup("textColor");
-    if (!borderColorSetting.isGroup() || !textColorSetting.isGroup() || !setting.lookupValue("content", content))
+    int ZIndex;
+    if (!borderColorSetting.isGroup() || !textColorSetting.isGroup() || !setting.lookupValue("content", content) || !setting.lookupValue("ZIndex", ZIndex))
         throw Layout::Layout::InvalidConfigException();
 
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color textColor = parseColor(textColorSetting);
 
-    return std::make_unique<Layout::Text>(content, transform, textColor, 5, borderColor);
+    return std::make_unique<Layout::Text>(content, transform, textColor, 5, borderColor, ZIndex);
 }
 
 std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting, Layout::Transform transform)
 {
-    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("path"))
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("path") || !setting.exists("ZIndex"))
         throw Layout::Layout::InvalidConfigException();
 
     std::string path;
     const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
-    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("path", path))
+    int ZIndex;
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("path", path) || !setting.lookupValue("ZIndex", ZIndex))
         throw Layout::Layout::InvalidConfigException();
 
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color fillColor = parseColor(fillColorSetting);
 
-    return std::make_unique<Layout::Image>(transform, fillColor, borderColor, path);
+    return std::make_unique<Layout::Image>(transform, fillColor, borderColor, path, ZIndex);
 
 }
 
