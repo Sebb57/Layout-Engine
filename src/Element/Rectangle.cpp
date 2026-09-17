@@ -9,7 +9,7 @@
 #include "Rectangle.hpp"
 #include <memory>
 
-Layout::Rectangle::Rectangle(Transform transform, Color fillColor, Color borderColor, int zIndex) : AElement(transform, fillColor, borderColor, zIndex)
+Layout::Rectangle::Rectangle(Transform transform, Options options) : AElement(transform, options)
 {}
 
 void Layout::Rectangle::update(float deltaTime)
@@ -19,5 +19,5 @@ void Layout::Rectangle::update(float deltaTime)
 
 void Layout::Rectangle::draw(IGraphic& graphicalLib)
 {
-    graphicalLib.drawRectangle(this->transform);
+    graphicalLib.drawRectangle(this->transform, this->_options);
 }

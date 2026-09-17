@@ -7,20 +7,19 @@
 **/
 
 #ifndef TEXT_HPP_
-#define TEXT_HPP_
+    #define TEXT_HPP_
 
-#include "AElement.hpp"
-#include <string>
+    #include "AElement.hpp"
+    #include "Options.hpp"
+    #include <string>
 
 namespace Layout {
 
 class Text : public AElement {
     std::string _content;
-    Color _textColor;
-    unsigned _outlineThickness;
 
     public:
-        Text(std::string content, Transform transform, Color textColor, unsigned outlineThickness, Color borderColor, int zIndex = 0);
+        Text(std::string content, Transform transform, Options options);
         ~Text() = default;
 
         void update(float deltaTime) override;
@@ -30,4 +29,3 @@ class Text : public AElement {
 }
 
 #endif /* TEXT_HPP_ */
-
