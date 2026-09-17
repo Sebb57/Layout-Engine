@@ -7,12 +7,13 @@
 **/
 
 #include "Image.hpp"
+#include <memory>
 
 void Layout::Image::update(float deltaTime)
 {
     (void)deltaTime;
 }
 
-void Layout::Image::draw()
+void Layout::Image::draw(Layout::IGraphic&)
 {
 }

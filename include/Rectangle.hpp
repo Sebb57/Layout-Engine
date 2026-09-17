@@ -10,6 +10,7 @@
 #define RECTANGLE_HPP_
 
 #include "AElement.hpp"
+#include <memory>
 
 namespace Layout {
 
@@ -19,7 +20,7 @@ class Rectangle : public AElement {
         ~Rectangle() = default;
 
         void update(float deltaTime) override;
-        void draw() override;
+        void draw(IGraphic& graphicalLib) override;
 };
 
 }

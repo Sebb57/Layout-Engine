@@ -23,7 +23,7 @@ class Text : public AElement {
         ~Text() = default;
 
         void update(float deltaTime) override;
-        void draw() override;
+        void draw(IGraphic& graphicalLib) override;
 };
 
 }

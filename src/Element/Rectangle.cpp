@@ -7,12 +7,13 @@
 **/
 
 #include "Rectangle.hpp"
+#include <memory>
 
 void Layout::Rectangle::update(float deltaTime)
 {
     (void)deltaTime;
 }
 
-void Layout::Rectangle::draw()
+void Layout::Rectangle::draw(Layout::IGraphic&)
 {
 }

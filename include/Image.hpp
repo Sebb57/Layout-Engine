@@ -23,7 +23,7 @@ class Image : public AElement {
         ~Image() = default;
 
         void update(float deltaTime) override;
-        void draw() override;
+        void draw(IGraphic& graphicalLib) override;
 };
 
 }

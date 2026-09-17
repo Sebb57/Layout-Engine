@@ -8,6 +8,9 @@ int main()
 
     try {
         layout.load("example.layout");
+        while (true) {
+            layout.draw();
+        }
         std::cout << "Layout Engine" << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "std::exception: " << e.what() << std::endl;

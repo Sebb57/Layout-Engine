@@ -7,12 +7,13 @@
 **/
 
 #include "Text.hpp"
+#include <memory>
 
 void Layout::Text::update(float deltaTime)
 {
     (void)deltaTime;
 }
 
-void Layout::Text::draw()
+void Layout::Text::draw(Layout::IGraphic&)
 {
 }
