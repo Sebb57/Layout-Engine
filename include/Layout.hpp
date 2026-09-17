@@ -7,6 +7,7 @@
 **/
 
 #pragma once
+#include "IGraphic.hpp"
 #ifndef LAYOUT_HPP_
     #define LAYOUT_HPP_
 
@@ -26,14 +27,15 @@ class Layout {
     // std::vector<Event> _events; // TODO: uncomment this
     std::optional<Section*> _selected;
     // std::unordered_map<std::string, fonction> _shortcuts; // TODO: shortcuts
-    LibName _graphicalLib = LibName::SFML;
+    LibName _graphicalLibName = LibName::SFML;
+    std::unique_ptr<IGraphic> _graphicalLib;
     int _width;
     int _height;
     // TODO: dynamic lib
 
     public:
-        Layout() = default;
-        Layout(LibName name) : _graphicalLib(name) {}
+        Layout();
+        Layout(LibName name);
 
         void save(std::filesystem::path fp);
         void load(std::filesystem::path fp);
