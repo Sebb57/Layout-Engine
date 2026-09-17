@@ -25,7 +25,7 @@ class Section : public AElement {
     bool _hidden;
 
     public:
-        Section(Color fillColor, Color borderColor,  std::string id, bool hidden) : AElement(fillColor, borderColor), _id(id), _hidden(hidden) {}
+        Section(Transform transform, Color fillColor, Color borderColor,  std::string id, bool hidden, int zIndex) : AElement(transform, fillColor, borderColor, zIndex), _id(id), _hidden(hidden) {}
         ~Section() = default;
 
         std::unordered_map<std::string, std::unique_ptr<IElement>>& getElementsMap() { return this->_elementMap; }

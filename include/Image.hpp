@@ -19,7 +19,7 @@ class Image : public AElement {
     std::filesystem::path _path;
 
     public:
-        Image(Color fillColor, Color borderColor, std::string path) : AElement(fillColor, borderColor), _path(path) {}
+        Image(Transform transform, Color fillColor, Color borderColor, std::string path, int zIndex = 0);
         ~Image() = default;
 
         void update(float deltaTime) override;

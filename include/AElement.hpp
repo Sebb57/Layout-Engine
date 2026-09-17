@@ -9,19 +9,22 @@
 #ifndef AELEMENT_HPP_
 #define AELEMENT_HPP_
 
-#include "IElement.hpp"
 #include "Color.hpp"
+#include "Component.hpp"
+#include "IElement.hpp"
 
 namespace Layout {
 
 class AElement : public IElement {
     public:
-        AElement(Color fillColor, Color borderColor) : _fillColor(fillColor), _borderColor(borderColor) {}
+        AElement(Transform transform, Color fillColor, Color borderColor, int zIndex = 0) : transform(transform), _fillColor(fillColor), _borderColor(borderColor), _zIndex(zIndex) {}
         ~AElement() override = default;
+        Transform transform;
 
     protected:
         Color _fillColor;
         Color _borderColor;
+        int _zIndex = 0;
 };
 
 }
