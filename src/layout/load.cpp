@@ -8,6 +8,7 @@
 
 #include "Component.hpp"
 #include "Layout.hpp"
+#include "Options.hpp"
 #include "constants.hpp"
 #include "Rectangle.hpp"
 #include "Text.hpp"
@@ -98,8 +99,12 @@ std::unique_ptr<Layout::IElement> parseRectangle(const libconfig::Setting& setti
 
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color fillColor = parseColor(fillColorSetting);
+    Layout::Options options;
+    options.primaryColor = fillColor;
+    options.secondaryColor = borderColor;
+    options.zIndex = ZIndex;
 
-    return std::make_unique<Layout::Rectangle>(transform, fillColor, borderColor, ZIndex);
+    return std::make_unique<Layout::Rectangle>(transform, options);
 }
 
 std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting, Layout::Transform transform)
@@ -117,7 +122,12 @@ std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting, L
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color textColor = parseColor(textColorSetting);
 
-    return std::make_unique<Layout::Text>(content, transform, textColor, 5, borderColor, ZIndex);
+    Layout::Options options;
+    options.primaryColor = textColor;
+    options.secondaryColor = borderColor;
+    options.zIndex = ZIndex;
+
+    return std::make_unique<Layout::Text>(content, transform, options);
 }
 
 std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting, Layout::Transform transform)
@@ -134,8 +144,12 @@ std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting, 
 
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color fillColor = parseColor(fillColorSetting);
+    Layout::Options options;
+    options.primaryColor = fillColor;
+    options.secondaryColor = borderColor;
+    options.zIndex = ZIndex;
 
-    return std::make_unique<Layout::Image>(transform, fillColor, borderColor, path, ZIndex);
+    return std::make_unique<Layout::Image>(transform, path, options);
 
 }
 
@@ -186,8 +200,12 @@ std::unique_ptr<Layout::Section> parseSection(const libconfig::Setting& setting,
     Layout::Color fillColor = parseColor(fillColorSetting);
 
     Layout::Transform transform = parseTransform(setting);
+    Layout::Options options;
+    options.primaryColor = fillColor;
+    options.secondaryColor = borderColor;
+    options.zIndex = -1;
 
-    auto newSection = std::make_unique<Layout::Section>(transform, borderColor, fillColor, name, true);
+    auto newSection = std::make_unique<Layout::Section>(transform, name, true, options);
 
     if (!setting.exists("elements"))
         throw Layout::Layout::InvalidConfigException();
