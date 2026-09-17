@@ -109,7 +109,7 @@ std::unique_ptr<Layout::IElement> parseRectangle(const libconfig::Setting& setti
 
 std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting, Layout::Transform transform)
 {
-    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("textColor") || !setting.exists("content") || !setting.exists("ZIndex"))
+    if (!setting.exists("borderColor") || !setting.exists("textColor") || !setting.exists("content") || !setting.exists("ZIndex"))
         throw Layout::Layout::InvalidConfigException();
 
     std::string content;
