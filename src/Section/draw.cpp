@@ -1,6 +1,6 @@
 /**
  * @file section.cpp
- * @brief section constructor and inherited function
+ * @brief inherited function
  *
  * @author Seb
  * @date 2026-09-17
@@ -16,5 +16,5 @@ void Layout::Section::update(float deltaTime)
 
 void Layout::Section::draw(IGraphic& graphicalLib)
 {
-    (void)graphicalLib;
+    graphicalLib.drawRectangle(this->transform);
 }
