@@ -10,12 +10,13 @@
 #define SECTION_HPP_
 
 #include "AElement.hpp"
-#include "IElement.hpp"
-#include "constants.hpp"
 #include "Color.hpp"
+#include "constants.hpp"
+#include "IElement.hpp"
+#include "Options.hpp"
+#include <memory>
 #include <string>
 #include <unordered_map>
-#include <memory>
 
 namespace Layout {
 
@@ -25,7 +26,7 @@ class Section : public AElement {
     bool _hidden;
 
     public:
-        Section(Transform transform, Color fillColor, Color borderColor,  std::string id, bool hidden, int zIndex = -1) : AElement(transform, fillColor, borderColor, zIndex), _id(id), _hidden(hidden) {}
+        Section(Transform transform, std::string id, bool hidden, Options options) : AElement(transform, options), _id(id), _hidden(hidden) {}
         ~Section() = default;
 
         std::unordered_map<std::string, std::unique_ptr<IElement>>& getElementsMap() { return this->_elementMap; }

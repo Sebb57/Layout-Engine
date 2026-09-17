@@ -10,6 +10,7 @@
     #define IGRAPHIC_H
 
     #include "Component.hpp"
+    #include "Options.hpp"
     #include <cstddef>
     #include <cstdint>
     #include <filesystem>
@@ -41,9 +42,9 @@ namespace Layout {
             virtual void update() = 0;
             virtual bool isOpen() const noexcept = 0;
 
-            virtual void drawRectangle(Transform transform) const = 0;
-            virtual void drawImage(Transform transform, std::filesystem::path path) const = 0;
-            virtual void drawText(Transform transform, std::string text, std::filesystem::path font = "./assets/Arial Regular.ttf") const = 0;
+            virtual void drawRectangle(Transform transform, Options options) const = 0;
+            virtual void drawImage(Transform transform, std::filesystem::path path, Options options) const = 0;
+            virtual void drawText(Transform transform, std::string text, Options options, std::filesystem::path font = "./assets/Arial Regular.ttf") const = 0;
 
             IGraphic& operator=(const IGraphic& object) = delete;
             IGraphic& operator=(IGraphic&& object) = delete;

@@ -10,13 +10,14 @@
 #define RECTANGLE_HPP_
 
 #include "AElement.hpp"
+#include "Options.hpp"
 #include <memory>
 
 namespace Layout {
 
 class Rectangle : public AElement {
     public:
-        Rectangle(Transform transform, Color fillColor, Color borderColor, int zIndex = 0);
+        Rectangle(Transform transform, Options options);
         ~Rectangle() = default;
 
         void update(float deltaTime) override;

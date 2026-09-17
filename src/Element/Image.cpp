@@ -9,8 +9,8 @@
 #include "Image.hpp"
 #include <memory>
 
-Layout::Image::Image(Transform transform, Color fillColor, Color borderColor, std::string path, int zIndex)
-    : AElement(transform, fillColor, borderColor, zIndex), _path(path)
+Layout::Image::Image(Transform transform, std::string path, Options options)
+    : AElement(transform, options), _path(path)
 {}
 
 void Layout::Image::update(float deltaTime)
@@ -20,5 +20,5 @@ void Layout::Image::update(float deltaTime)
 
 void Layout::Image::draw(Layout::IGraphic& graphicalLib)
 {
-    graphicalLib.drawImage(this->transform, this->_path);
+    graphicalLib.drawImage(this->transform, this->_path, this->_options);
 }
