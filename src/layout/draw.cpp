@@ -26,7 +26,6 @@ std::unique_ptr<Layout::IGraphic> graphicalFactory(Layout::LibName name, Layout:
 
 }
 
-//TODO: fix segfault
 void Layout::Layout::draw()
 {
     //TODO: add graphicalLib to layout class
@@ -43,7 +42,7 @@ void Layout::Layout::draw()
         graphicalLib->drawRectangle(section.second->transform);
 
         for (auto& element : section.second->getElementsMap() ) {
-            element.second->draw(graphicalLib);
+            element.second->draw(*graphicalLib.get());
         }
     }
     graphicalLib->update();

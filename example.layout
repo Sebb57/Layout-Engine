@@ -1,6 +1,6 @@
 layout = {
-    width = 1920;
-    height = 1080;
+    width = 500;
+    height = 300;
 
     sections = {
         main = {
