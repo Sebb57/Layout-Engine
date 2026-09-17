@@ -139,7 +139,7 @@ std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting, 
 
 Layout::Transform parseTransform(const libconfig::Setting& setting)
 {
-    if (!setting.exists("pos") || !setting.exists("size") || !setting.exists("elements"))
+    if (!setting.exists("pos") || !setting.exists("size"))
         throw Layout::Layout::InvalidConfigException();
 
     const libconfig::Setting& pos = setting.lookup("pos");
