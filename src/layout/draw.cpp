@@ -9,6 +9,7 @@
 #include "AGraphic.hpp"
 #include "Layout.hpp"
 #include <memory>
+#include <iostream>
 
 void Layout::Layout::draw()
 {
@@ -20,10 +21,12 @@ void Layout::Layout::draw()
 
     this->_graphicalLib->clear();
     for (auto& section : this->_sections) {
-        section.second->draw(*this->_graphicalLib.get());
+        section.second->draw(*this->_graphicalLib);
 
-        for (auto& element : section.second->getElementsMap() ) {
-            element.second->draw(*this->_graphicalLib.get());
+        auto& map = section.second->getElementsMap();
+        for (auto& element : section.second->getElementsSorted()) {
+            std::cout << element.second << std::endl;
+            map.at(element.second)->draw(*this->_graphicalLib);
         }
     }
     this->_graphicalLib->update();

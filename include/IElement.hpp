@@ -22,6 +22,7 @@ class IElement {
 
         virtual void update(float deltaTime) = 0;
         virtual void draw(IGraphic& graphicalLib) = 0;
+        virtual int getZIndex() const noexcept = 0;
 };
 
 }

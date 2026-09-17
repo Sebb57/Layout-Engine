@@ -10,18 +10,20 @@
 #define SECTION_HPP_
 
 #include "AElement.hpp"
-#include "Color.hpp"
 #include "constants.hpp"
 #include "IElement.hpp"
 #include "Options.hpp"
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 namespace Layout {
 
 class Section : public AElement {
     std::unordered_map<std::string, std::unique_ptr<IElement>> _elementMap;
+    std::vector<std::pair<int, std::string>> _elementSorted;
     std::string _id;
     bool _hidden;
 
@@ -30,6 +32,7 @@ class Section : public AElement {
         ~Section() = default;
 
         std::unordered_map<std::string, std::unique_ptr<IElement>>& getElementsMap() { return this->_elementMap; }
+        std::vector<std::pair<int, std::string>>& getElementsSorted() { return this->_elementSorted; }
         std::string getData(std::string id);
         bool addElement(std::string name, std::unique_ptr<IElement> element);
         

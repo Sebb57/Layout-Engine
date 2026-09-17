@@ -46,7 +46,7 @@ class Layout {
 
         std::vector<std::string> getData(std::string secId, std::vector<std::string> elemsId);
 
-        void addElem(IElement element, std::string elemId, std::string secId);
+        void addElem(IElement& element, std::string elemId, std::string secId);
         void popElem(std::string elemId, std::string secId);
 
         class LayoutException : public std::exception {

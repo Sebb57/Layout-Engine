@@ -22,6 +22,8 @@ class AElement : public IElement {
         ~AElement() override = default;
         Transform transform;
 
+        int getZIndex() const noexcept final { return this->_options.zIndex; }
+
     protected:
         Options _options;
 };
