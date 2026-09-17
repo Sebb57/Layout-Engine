@@ -27,6 +27,7 @@ endif()
 
 add_library(Layout SHARED
     src/layout/load.cpp
+    src/layout/draw.cpp
     src/Section/addElement.cpp
     src/Element/Text.cpp
     src/Element/Image.cpp
