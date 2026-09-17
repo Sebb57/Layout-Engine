@@ -6,6 +6,8 @@ layout = {
         main = {
             anchX = "left";
             anchY = "middle";
+            fillColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
+            borderColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
 
             pos = { x = 0.0; y = 0.0; offsetX = 0; offsetY = 0; };
             size = { x = 30.0; y = 30.0; };

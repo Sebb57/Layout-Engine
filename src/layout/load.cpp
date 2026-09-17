@@ -157,7 +157,14 @@ std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting
 
 std::unique_ptr<Layout::Section> parseSection(const libconfig::Setting& setting, const std::string& name)
 {
-    auto newSection = std::make_unique<Layout::Section>(name, true);
+    const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
+    const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup())
+        throw Layout::Layout::InvalidConfigException();
+    Layout::Color borderColor = parseColor(borderColorSetting);
+    Layout::Color fillColor = parseColor(fillColorSetting);
+
+    auto newSection = std::make_unique<Layout::Section>(borderColor, fillColor, name, true);
 
     if (!setting.exists("pos") || !setting.exists("size") || !setting.exists("elements"))
         throw Layout::Layout::InvalidConfigException();

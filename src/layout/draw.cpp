@@ -9,7 +9,6 @@
 #include "AGraphic.hpp"
 #include "Layout.hpp"
 #include <memory>
-#include <iostream>
 
 void Layout::Layout::draw()
 {
@@ -21,8 +20,7 @@ void Layout::Layout::draw()
 
     this->_graphicalLib->clear();
     for (auto& section : this->_sections) {
-        //TODO: make section inherit from IElement
-        this->_graphicalLib->drawRectangle(section.second->transform);
+        section.second->draw(*this->_graphicalLib.get());
 
         for (auto& element : section.second->getElementsMap() ) {
             element.second->draw(*this->_graphicalLib.get());
