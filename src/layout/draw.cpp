@@ -25,7 +25,6 @@ void Layout::Layout::draw()
 
         auto& map = section.second->getElementsMap();
         for (auto& element : section.second->getElementsSorted()) {
-            std::cout << element.second << std::endl;
             map.at(element.second)->draw(*this->_graphicalLib);
         }
     }
