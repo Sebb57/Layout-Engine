@@ -35,6 +35,7 @@ class Section : public AElement {
         std::vector<std::pair<int, std::string>>& getElementsSorted() { return this->_elementSorted; }
         std::string getData(std::string id);
         bool addElement(std::string name, std::unique_ptr<IElement> element);
+        void popElement(std::string name);
         
         void open() { if (this->_id != constants::mainWindowName) this->_hidden = !this->_hidden; }
         void update(float deltaTime) override;

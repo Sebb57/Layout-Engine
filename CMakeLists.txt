@@ -32,6 +32,9 @@ add_library(Layout SHARED
     src/layout/handleEvent.cpp
     src/layout/update.cpp
     src/layout/close.cpp
+	src/layout/addElement.cpp
+	src/layout/popElement.cpp
+    src/Section/popElement.cpp
     src/Section/draw.cpp
     src/Section/addElement.cpp
     src/Element/Text.cpp
