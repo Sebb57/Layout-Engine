@@ -23,7 +23,7 @@ namespace Layout {
             bool _isOpen = false;
 
         public:
-            AGraphic(Layout& layout) noexcept : _layout(layout) {}
+            AGraphic(Layout& layout) : _layout(layout) {}
             ~AGraphic() override = default;
 
             bool isOpen() const noexcept final { return this->_isOpen; }

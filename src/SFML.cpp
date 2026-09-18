@@ -57,10 +57,10 @@ inline sf::Vector2f getSizeFromTransform(Layout::Rect rect, sf::Vector2u windowS
     return {windowSize.x * rect.x + rect.offsetX, windowSize.y * rect.y + rect.offsetY};
 }
 
-// sf::Color colorNormalize(arcade::RGBA color)
-// {
-//     return sf::Color(color.r, color.g, color.b, color.a);
-// }
+sf::Color colorNormalize(Layout::Color color)
+{
+    return sf::Color(color.r, color.g, color.b, color.a);
+}
 
 }
 
@@ -343,7 +343,7 @@ void Layout::SFML::update()
     this->_nextFrameTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(1000 / constants::FPS_LIMIT);
 }
 
-void Layout::SFML::drawRectangle(Transform transform) const
+void Layout::SFML::drawRectangle(Transform transform, Options options) const
 {
     sf::RectangleShape rectangle;
 
@@ -354,17 +354,14 @@ void Layout::SFML::drawRectangle(Transform transform) const
     rectangle.setPosition(getPosFromTransform(transform.Pos, windowSize, anchorPoint));
     rectangle.setSize(getSizeFromTransform(transform.Size, windowSize));
     rectangle.setOrigin(getAnchorPoint<sf::Vector2f>(transform, rectangle.getSize()));
-    // rectangle.setRotation(angle);
-    // rectangle.setOutlineColor(colorNormalize(bcolor));
-    // rectangle.setOutlineThickness(1.0f);
-    // if (fill)
-    //     rectangle.setFillColor(colorNormalize(color));
-    // else
-    //     rectangle.setFillColor(sf::Color::Transparent);
+    rectangle.setRotation(options.angle);
+    rectangle.setFillColor(colorNormalize(options.primaryColor));
+    rectangle.setOutlineColor(colorNormalize(options.secondaryColor));
+    rectangle.setOutlineThickness(options.outlineThickness);
     this->_window->draw(rectangle);
 }
 
-void Layout::SFML::drawImage(Transform transform, std::filesystem::path path) const
+void Layout::SFML::drawImage(Transform transform, std::filesystem::path path, Options options) const
 {
     sf::Texture texture;
 
@@ -384,13 +381,12 @@ void Layout::SFML::drawImage(Transform transform, std::filesystem::path path) co
     sprite.setScale({scale, scale});
     sprite.setTexture(texture);
     sprite.setOrigin(spriteAnchorPoint);
-    // sprite.setRotation(angle);
-    // sprite.setScale({scale, scale});
+    sprite.setRotation(options.angle);
 
     this->_window->draw(sprite);
 }
 
-void Layout::SFML::drawText(Transform transform, std::string text, std::filesystem::path font) const
+void Layout::SFML::drawText(Transform transform, std::string text, Options options, std::filesystem::path font) const
 {
     sf::Font sfmlFont;
 
@@ -403,9 +399,9 @@ void Layout::SFML::drawText(Transform transform, std::string text, std::filesyst
     sf::Vector2u anchorPoint = getAnchorPoint<sf::Vector2u>(transform, windowSize);
     sfmlText.setFont(sfmlFont);
     sfmlText.setCharacterSize(windowSize.x * transform.Size.x + transform.Size.x);
-    // sfmlText.setFillColor(colorNormalize(color));
-    // sfmlText.setOutlineColor(colorNormalize(fcolor));
-    // sfmlText.setOutlineThickness(2 * scale);
+    sfmlText.setFillColor(colorNormalize(options.primaryColor));
+    sfmlText.setOutlineColor(colorNormalize(options.secondaryColor));
+    sfmlText.setOutlineThickness(options.outlineThickness);
     sfmlText.setString(text);
 
     sfmlText.setPosition(getPosFromTransform(transform.Pos, windowSize, anchorPoint));

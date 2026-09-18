@@ -36,9 +36,9 @@ namespace Layout {
             void clear() const final;
             void update() final;
 
-            void drawRectangle(Transform transform) const final;
-            void drawImage(Transform transform, std::filesystem::path path) const final;
-            void drawText(Transform transform, std::string text, std::filesystem::path font) const final;
+            void drawRectangle(Transform transform, Options options) const final;
+            void drawImage(Transform transform, std::filesystem::path path, Options options) const final;
+            void drawText(Transform transform, std::string text, Options options, std::filesystem::path font) const final;
     };
 }
 

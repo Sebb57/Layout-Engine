@@ -6,13 +6,14 @@
  * @date 2026-09-15
 **/
 
+#include "Component.hpp"
 #include "Layout.hpp"
+#include "Options.hpp"
 #include "constants.hpp"
 #include "Rectangle.hpp"
 #include "Text.hpp"
 #include "Image.hpp"
 #include <filesystem>
-#include <iostream>
 #include <libconfig.h++>
 #include <memory>
 
@@ -52,7 +53,7 @@ Layout::AnchorY resolveAnchorY(const libconfig::Setting& setting)
     throw Layout::Layout::InvalidConfigException();
 }
 
-Layout::Rect parseRect(const libconfig::Setting& setting, bool offsets)
+Layout::Rect parseRect(const libconfig::Setting& setting)
 {
     double x = 0;
     double y = 0;
@@ -61,9 +62,26 @@ Layout::Rect parseRect(const libconfig::Setting& setting, bool offsets)
 
     if (!setting.lookupValue("x", x) || !setting.lookupValue("y", y))
         throw Layout::Layout::InvalidConfigException();
-    if (offsets && (!setting.lookupValue("offsetX", offsetX) || !setting.lookupValue("offsetY", offsetY)))
+    if (!setting.lookupValue("offsetX", offsetX) || !setting.lookupValue("offsetY", offsetY))
         throw Layout::Layout::InvalidConfigException();
 
+    return Layout::Rect(x, y, offsetX, offsetY);
+}
+
+Layout::Rect parseRectSize(const libconfig::Setting& setting, bool offsets)
+{
+    double x = 0;
+    double y = 0;
+    double offsetX = 0;
+    double offsetY = 0;
+
+    if (offsets) {
+        if (!setting.lookupValue("x", offsetX) || !setting.lookupValue("y", offsetY))
+            throw Layout::Layout::InvalidConfigException();
+    } else {
+        if (!setting.lookupValue("x", x) || !setting.lookupValue("y", y))
+            throw Layout::Layout::InvalidConfigException();
+    }
     return Layout::Rect(x, y, offsetX, offsetY);
 }
 
@@ -85,57 +103,90 @@ Layout::Color parseColor(const libconfig::Setting& setting)
     return Layout::Color(r, g, b, a);
 }
 
-std::unique_ptr<Layout::IElement> parseRectangle(const libconfig::Setting& setting)
+std::unique_ptr<Layout::IElement> parseRectangle(const libconfig::Setting& setting, Layout::Transform transform)
 {
-    if (!setting.exists("fillColor") || !setting.exists("borderColor"))
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("ZIndex"))
         throw Layout::Layout::InvalidConfigException();
 
     const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
-    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup())
+    int ZIndex;
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("ZIndex", ZIndex))
         throw Layout::Layout::InvalidConfigException();
 
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color fillColor = parseColor(fillColorSetting);
+    Layout::Options options;
+    options.primaryColor = fillColor;
+    options.secondaryColor = borderColor;
+    options.zIndex = ZIndex;
 
-    return std::make_unique<Layout::Rectangle>(fillColor, borderColor);
+    return std::make_unique<Layout::Rectangle>(transform, options);
 }
 
-std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting)
+std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting, Layout::Transform transform)
 {
-    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("textColor") || !setting.exists("content"))
+    if (!setting.exists("borderColor") || !setting.exists("textColor") || !setting.exists("content") || !setting.exists("ZIndex"))
         throw Layout::Layout::InvalidConfigException();
 
     std::string content;
-    const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
     const libconfig::Setting& textColorSetting = setting.lookup("textColor");
-    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !textColorSetting.isGroup() || !setting.lookupValue("content", content))
+    int ZIndex;
+    if (!borderColorSetting.isGroup() || !textColorSetting.isGroup() || !setting.lookupValue("content", content) || !setting.lookupValue("ZIndex", ZIndex))
         throw Layout::Layout::InvalidConfigException();
 
     Layout::Color borderColor = parseColor(borderColorSetting);
-    Layout::Color fillColor = parseColor(fillColorSetting);
     Layout::Color textColor = parseColor(textColorSetting);
 
-    return std::make_unique<Layout::Text>(fillColor, borderColor, textColor, content);
+    Layout::Options options;
+    options.primaryColor = textColor;
+    options.secondaryColor = borderColor;
+    options.zIndex = ZIndex;
+
+    return std::make_unique<Layout::Text>(content, transform, options);
 }
 
-std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting)
+std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting, Layout::Transform transform)
 {
-    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("path"))
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("path") || !setting.exists("ZIndex"))
         throw Layout::Layout::InvalidConfigException();
 
     std::string path;
     const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
-    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("path", path))
+    int ZIndex;
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("path", path) || !setting.lookupValue("ZIndex", ZIndex))
         throw Layout::Layout::InvalidConfigException();
 
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color fillColor = parseColor(fillColorSetting);
+    Layout::Options options;
+    options.primaryColor = fillColor;
+    options.secondaryColor = borderColor;
+    options.zIndex = ZIndex;
 
-    return std::make_unique<Layout::Image>(fillColor, borderColor, path);
+    return std::make_unique<Layout::Image>(transform, path, options);
 
+}
+
+Layout::Transform parseTransform(const libconfig::Setting& setting, bool absolute)
+{
+    if (!setting.exists("pos") || !setting.exists("size"))
+        throw Layout::Layout::InvalidConfigException();
+
+    const libconfig::Setting& pos = setting.lookup("pos");
+    const libconfig::Setting& size = setting.lookup("size");
+    if (!pos.isGroup() || !size.isGroup())
+        throw Layout::Layout::InvalidConfigException();
+
+    Layout::Transform newTransform;
+    newTransform.AnchX = resolveAnchorX(setting);
+    newTransform.AnchY = resolveAnchorY(setting);
+    newTransform.Pos = parseRect(pos);
+    newTransform.Size = parseRectSize(size, absolute);
+
+    return newTransform;
 }
 
 std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting)
@@ -144,34 +195,45 @@ std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting
 
     if (!setting.lookupValue("type", type))
         throw Layout::Layout::InvalidConfigException();
+    Layout::Transform transform;
 
-    if (type == "rectangle")
-        return parseRectangle(setting);
-    if (type == "text")
-        return parseText(setting);
-    if (type == "image")
-        return parseImage(setting);
-
+    if (type == "rectangle") {
+        transform = parseTransform(setting, false);
+        return parseRectangle(setting, transform);
+    }
+    if (type == "text") {
+        transform = parseTransform(setting, true);
+        return parseText(setting, transform);
+    }
+    if (type == "image") {
+        transform = parseTransform(setting, false);
+        return parseImage(setting, transform);
+    }
     throw Layout::Layout::InvalidConfigException();
 }
 
 std::unique_ptr<Layout::Section> parseSection(const libconfig::Setting& setting, const std::string& name)
 {
-    auto newSection = std::make_unique<Layout::Section>(name, true);
-
-    if (!setting.exists("pos") || !setting.exists("size") || !setting.exists("elements"))
+    const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
+    const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup())
         throw Layout::Layout::InvalidConfigException();
+    Layout::Color borderColor = parseColor(borderColorSetting);
+    Layout::Color fillColor = parseColor(fillColorSetting);
 
-    const libconfig::Setting& pos = setting.lookup("pos");
-    const libconfig::Setting& size = setting.lookup("size");
+    Layout::Transform transform = parseTransform(setting, true);
+    Layout::Options options;
+    options.primaryColor = fillColor;
+    options.secondaryColor = borderColor;
+    options.zIndex = -1;
+
+    auto newSection = std::make_unique<Layout::Section>(transform, name, true, options);
+
+    if (!setting.exists("elements"))
+        throw Layout::Layout::InvalidConfigException();
     const libconfig::Setting& elements = setting.lookup("elements");
-    if (!pos.isGroup() || !size.isGroup() || !elements.isGroup())
+    if (!elements.isGroup())
         throw Layout::Layout::InvalidConfigException();
-
-    newSection->transform.AnchX = resolveAnchorX(setting);
-    newSection->transform.AnchY = resolveAnchorY(setting);
-    newSection->transform.Pos = parseRect(pos, true);
-    newSection->transform.Size = parseRect(size, false);
 
     for (int i = 0; i < elements.getLength(); ++i) {
         const libconfig::Setting& elementSetting = elements[i];
