@@ -29,6 +29,9 @@ add_library(Layout SHARED
     src/layout/load.cpp
     src/layout/draw.cpp
     src/layout/layout.cpp
+    src/layout/handleEvent.cpp
+    src/layout/update.cpp
+    src/layout/close.cpp
     src/Section/draw.cpp
     src/Section/addElement.cpp
     src/Element/Text.cpp

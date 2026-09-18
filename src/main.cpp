@@ -1,5 +1,6 @@
 #include <iostream>
 #include <libconfig.h++>
+#include "Component.hpp"
 #include "Layout.hpp"
 
 int main()
@@ -7,11 +8,19 @@ int main()
     Layout::Layout layout;
 
     try {
-        layout.load("example.layout");
+        layout.load("example2.layout");
+        Layout::Event event;
         while (true) {
+            layout.update();
+
+            if (layout.handleEvent(event))
+                continue;
+            if (event.type == Layout::Event::Type::KeyPressed && event.key == Layout::Event::Key::A) {
+                layout.close();
+                break;
+            }
             layout.draw();
         }
-        std::cout << "Layout Engine" << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "std::exception: " << e.what() << std::endl;
         return -1;
