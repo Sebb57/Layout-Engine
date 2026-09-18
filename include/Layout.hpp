@@ -7,13 +7,14 @@
 **/
 
 #pragma once
-#include "IGraphic.hpp"
+#include <functional>
 #ifndef LAYOUT_HPP_
     #define LAYOUT_HPP_
 
     #include "IElement.hpp"
     #include "Section.hpp"
     #include "Component.hpp"
+    #include "IGraphic.hpp"
     #include <filesystem>
     #include <memory>
     #include <optional>
@@ -24,9 +25,9 @@ namespace Layout {
 
 class Layout {
     std::unordered_map<std::string, std::unique_ptr<Section>> _sections;
-    // std::vector<Event> _events; // TODO: uncomment this
+    std::vector<Event> _events;
     std::optional<Section*> _selected;
-    // std::unordered_map<std::string, fonction> _shortcuts; // TODO: shortcuts
+    std::unordered_map<std::string, std::string> _shortcuts; //TODO: implement correct shortcuts, the void fnuction is only temporary
     LibName _graphicalLibName = LibName::SFML;
     std::unique_ptr<IGraphic> _graphicalLib;
     int _width;
@@ -40,8 +41,9 @@ class Layout {
         void save(std::filesystem::path fp);
         void load(std::filesystem::path fp);
 
-        void handleEvent(); // TODO: add event struct as param
+        bool handleEvent(Event& event);
         void update();
+        void close();
         void draw();
 
         std::vector<std::string> getData(std::string secId, std::vector<std::string> elemsId);
