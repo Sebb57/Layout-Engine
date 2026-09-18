@@ -53,7 +53,7 @@ Layout::AnchorY resolveAnchorY(const libconfig::Setting& setting)
     throw Layout::Layout::InvalidConfigException();
 }
 
-Layout::Rect parseRect(const libconfig::Setting& setting, bool offsets)
+Layout::Rect parseRect(const libconfig::Setting& setting)
 {
     double x = 0;
     double y = 0;
@@ -62,9 +62,26 @@ Layout::Rect parseRect(const libconfig::Setting& setting, bool offsets)
 
     if (!setting.lookupValue("x", x) || !setting.lookupValue("y", y))
         throw Layout::Layout::InvalidConfigException();
-    if (offsets && (!setting.lookupValue("offsetX", offsetX) || !setting.lookupValue("offsetY", offsetY)))
+    if (!setting.lookupValue("offsetX", offsetX) || !setting.lookupValue("offsetY", offsetY))
         throw Layout::Layout::InvalidConfigException();
 
+    return Layout::Rect(x, y, offsetX, offsetY);
+}
+
+Layout::Rect parseRectSize(const libconfig::Setting& setting, bool offsets)
+{
+    double x = 0;
+    double y = 0;
+    double offsetX = 0;
+    double offsetY = 0;
+
+    if (offsets) {
+        if (!setting.lookupValue("x", offsetX) || !setting.lookupValue("y", offsetY))
+            throw Layout::Layout::InvalidConfigException();
+    } else {
+        if (!setting.lookupValue("x", x) || !setting.lookupValue("y", y))
+            throw Layout::Layout::InvalidConfigException();
+    }
     return Layout::Rect(x, y, offsetX, offsetY);
 }
 
@@ -153,7 +170,7 @@ std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting, 
 
 }
 
-Layout::Transform parseTransform(const libconfig::Setting& setting)
+Layout::Transform parseTransform(const libconfig::Setting& setting, bool absolute)
 {
     if (!setting.exists("pos") || !setting.exists("size"))
         throw Layout::Layout::InvalidConfigException();
@@ -166,8 +183,8 @@ Layout::Transform parseTransform(const libconfig::Setting& setting)
     Layout::Transform newTransform;
     newTransform.AnchX = resolveAnchorX(setting);
     newTransform.AnchY = resolveAnchorY(setting);
-    newTransform.Pos = parseRect(pos, true);
-    newTransform.Size = parseRect(size, false);
+    newTransform.Pos = parseRect(pos);
+    newTransform.Size = parseRectSize(size, absolute);
 
     return newTransform;
 }
@@ -178,15 +195,20 @@ std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting
 
     if (!setting.lookupValue("type", type))
         throw Layout::Layout::InvalidConfigException();
-    Layout::Transform transform = parseTransform(setting);
+    Layout::Transform transform;
 
-    if (type == "rectangle")
+    if (type == "rectangle") {
+        transform = parseTransform(setting, false);
         return parseRectangle(setting, transform);
-    if (type == "text")
+    }
+    if (type == "text") {
+        transform = parseTransform(setting, true);
         return parseText(setting, transform);
-    if (type == "image")
+    }
+    if (type == "image") {
+        transform = parseTransform(setting, false);
         return parseImage(setting, transform);
-
+    }
     throw Layout::Layout::InvalidConfigException();
 }
 
@@ -199,7 +221,7 @@ std::unique_ptr<Layout::Section> parseSection(const libconfig::Setting& setting,
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color fillColor = parseColor(fillColorSetting);
 
-    Layout::Transform transform = parseTransform(setting);
+    Layout::Transform transform = parseTransform(setting, true);
     Layout::Options options;
     options.primaryColor = fillColor;
     options.secondaryColor = borderColor;
