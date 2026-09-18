@@ -9,13 +9,15 @@ int main()
     Layout::Layout layout;
 
     try {
-        layout.load("example.layout");
+        layout.load("example2.layout");
         Layout::Event event;
         while (true) {
             layout.update();
 
-            if (layout.handleEvent(event))
+            if (layout.handleEvent(event)) {
+                std::cout << "catched" << std::endl;
                 continue;
+            }
             if (event.type == Layout::Event::Type::KeyPressed && event.key == Layout::Event::Key::A) {
                 layout.close();
                 break;

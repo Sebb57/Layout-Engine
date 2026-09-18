@@ -7,6 +7,7 @@
 **/
 
 #include "Layout.hpp"
+#include <iostream>
 #include <string>
 
 bool Layout::Layout::handleEvent(Event& event)
@@ -16,10 +17,8 @@ bool Layout::Layout::handleEvent(Event& event)
         this->_events.pop_back();
     }
 
-    std::string keyStr{event.keyChar};
-
-    if (this->_shortcuts.find(keyStr) != this->_shortcuts.end()) {
-        //TODO: call shortcut function
+    if (this->_shortcuts.find(event.key) != this->_shortcuts.end()) {
+        this->openSection(this->_shortcuts.at(event.key));
         event = Event{};
         return true;
     }

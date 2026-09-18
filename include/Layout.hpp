@@ -26,12 +26,14 @@ class Layout {
     std::unordered_map<std::string, std::unique_ptr<Section>> _sections;
     std::vector<Event> _events;
     std::optional<Section*> _selected;
-    std::unordered_map<std::string, std::string> _shortcuts; //TODO: implement correct shortcuts, the void fnuction is only temporary
+    std::unordered_map<Event::Key, std::string> _shortcuts = {{Event::Key::S, "section1"}}; //TODO: build the map based on config file
     LibName _graphicalLibName = LibName::SFML;
     std::unique_ptr<IGraphic> _graphicalLib;
     int _width;
     int _height;
     // TODO: dynamic lib
+
+    void openSection(std::string target);
 
     public:
         Layout();

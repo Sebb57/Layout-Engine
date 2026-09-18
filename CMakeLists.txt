@@ -35,6 +35,7 @@ add_library(Layout SHARED
 	src/layout/addElement.cpp
 	src/layout/popElement.cpp
     src/layout/getData.cpp
+    src/layout/openSection.cpp
     src/Section/popElement.cpp
     src/Section/draw.cpp
     src/Section/addElement.cpp
