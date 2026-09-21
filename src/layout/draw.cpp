@@ -13,11 +13,8 @@
 
 void Layout::Layout::draw()
 {
-    if (!this->_graphicalLib)
+    if (!this->_graphicalLib || !this->_graphicalLib->isOpen())
         return;
-
-    if (!this->_graphicalLib->isOpen())
-        this->_graphicalLib->open(this->_width, this->_height, "Layout Engine");
 
     this->_graphicalLib->clear();
     for (auto& section : this->_sections) {

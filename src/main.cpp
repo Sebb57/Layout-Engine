@@ -9,23 +9,20 @@ int main()
     Layout::Layout layout;
 
     try {
-        layout.load("example2.layout");
-        Layout::Event event;
+        layout.load("example.layout");
+
         while (true) {
+            layout.handleEvents();
+            if (!layout.isOpen())
+                break;
+
             layout.update();
 
-            if (layout.handleEvent(event)) {
-                continue;
-            }
-            if (event.type == Layout::Event::Type::KeyPressed && event.key == Layout::Event::Key::A) {
-                layout.close();
-                break;
-            }
-            if (event.type == Layout::Event::Type::KeyPressed && event.key == Layout::Event::Key::T) {
-                std::vector<std::string> data = layout.getData("main", {"helloWorld"});
-                if (!data.empty())
-                    std::cout << data.front() << std::endl;
-            }
+            // if (event.type == Layout::Event::Type::KeyPressed && event.key == Layout::Event::Key::T) {
+            //     std::vector<std::string> data = layout.getData("main", {"helloWorld"});
+            //     if (!data.empty())
+            //         std::cout << data.front() << std::endl;
+            // }
             layout.draw();
         }
     } catch (const std::exception& e) {

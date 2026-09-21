@@ -36,9 +36,10 @@ class Section : public AElement {
         std::string getData(std::string id);
         bool addElement(std::string name, std::unique_ptr<IElement> element);
         void popElement(std::string name);
-        
+        bool isMouseInside(std::pair<int, int> mousePos, std::pair<unsigned, unsigned> windowSize);
+
         void open() { if (this->_id != constants::mainWindowName) this->_hidden = !this->_hidden; }
-        bool handleEvent(Event event) override { (void) event; return false; }
+        bool handleEvent(Event event) override;
         void update(float deltaTime) override;
         void draw(IGraphic& graphicalLib) override;
 

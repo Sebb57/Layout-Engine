@@ -11,10 +11,5 @@
 
 void Layout::Layout::update()
 {
-    std::queue<Event> events = this->_graphicalLib->listen();
-
-    while (!events.empty()) {
-        this->_events.push_back(events.front());
-        events.pop();
-    }
+    
 }

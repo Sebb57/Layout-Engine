@@ -456,4 +456,6 @@ void Layout::Layout::load(std::filesystem::path fp)
     }
     if (!mainFound)
         throw Layout::Layout::InvalidConfigException();
+
+    this->_graphicalLib->open(this->_width, this->_height, "Layout Engine");
 }

@@ -98,7 +98,7 @@ std::queue<Layout::Event> Layout::SFML::listen() const
     while (this->_window->pollEvent(sfmlEvent)) {
         Event event;
 
-        if (sfmlEvent.type == sf::Event::Closed || (sfmlEvent.type == sf::Event::KeyPressed && sfmlEvent.key.code == sf::Keyboard::Q)) {
+        if (sfmlEvent.type == sf::Event::Closed) {
             event.type = Event::Type::Closed;
             events.push(event);
             continue;
@@ -335,7 +335,8 @@ std::queue<Layout::Event> Layout::SFML::listen() const
                     break;
                 default:
                     break;
-            }
+                }
+                events.push(event);
         }
         if (sfmlEvent.type == sf::Event::MouseButtonReleased) {
             event.type = Event::Type::MouseButtonReleased;
@@ -354,11 +355,13 @@ std::queue<Layout::Event> Layout::SFML::listen() const
                 default:
                     break;
             }
+            events.push(event);
         }
         if (sfmlEvent.type == sf::Event::MouseMoved) {
             event.type = Event::Type::MouseMoved;
             event.mouseX = sfmlEvent.mouseMove.x;
             event.mouseY = sfmlEvent.mouseMove.y;
+            events.push(event);
         }
     }
 
