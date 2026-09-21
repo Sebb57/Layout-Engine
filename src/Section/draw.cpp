@@ -16,5 +16,6 @@ void Layout::Section::update(float deltaTime)
 
 void Layout::Section::draw(IGraphic& graphicalLib)
 {
-    graphicalLib.drawRectangle(this->transform, this->_options);
+    if (!this->_hidden)
+        graphicalLib.drawRectangle(this->transform, this->_options);
 }

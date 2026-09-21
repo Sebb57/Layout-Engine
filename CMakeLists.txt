@@ -32,8 +32,14 @@ add_library(Layout SHARED
     src/layout/handleEvent.cpp
     src/layout/update.cpp
     src/layout/close.cpp
+	src/layout/addElement.cpp
+	src/layout/popElement.cpp
+    src/layout/getData.cpp
+    src/layout/openSection.cpp
+    src/Section/popElement.cpp
     src/Section/draw.cpp
     src/Section/addElement.cpp
+    src/Section/getData.cpp
     src/Element/Text.cpp
     src/Element/Image.cpp
     src/Element/Rectangle.cpp
