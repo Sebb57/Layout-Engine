@@ -28,7 +28,7 @@ class Layout {
     std::vector<Event> _events;
     std::set<Event::Key> _heldKeys;
     std::optional<Section*> _selected;
-    std::unordered_map<Event::Key, std::string> _shortcuts = {{Event::Key::S, "section1"}}; //TODO: build the map based on config file
+    std::unordered_map<Event::Key, std::string> _shortcuts;
     LibName _graphicalLibName = LibName::SFML;
     std::unique_ptr<IGraphic> _graphicalLib;
     int _width;

@@ -14,6 +14,7 @@
 #include "Text.hpp"
 #include "Image.hpp"
 #include <filesystem>
+#include <iostream>
 #include <libconfig.h++>
 #include <memory>
 
@@ -110,7 +111,7 @@ std::unique_ptr<Layout::IElement> parseRectangle(const libconfig::Setting& setti
 
     const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
-    int ZIndex;
+    int ZIndex = 0;
     if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("ZIndex", ZIndex))
         throw Layout::Layout::InvalidConfigException();
 
@@ -132,7 +133,7 @@ std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting, L
     std::string content;
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
     const libconfig::Setting& textColorSetting = setting.lookup("textColor");
-    int ZIndex;
+    int ZIndex = 0;
     if (!borderColorSetting.isGroup() || !textColorSetting.isGroup() || !setting.lookupValue("content", content) || !setting.lookupValue("ZIndex", ZIndex))
         throw Layout::Layout::InvalidConfigException();
 
@@ -155,7 +156,7 @@ std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting, 
     std::string path;
     const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
-    int ZIndex;
+    int ZIndex = 0;
     if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("path", path) || !setting.lookupValue("ZIndex", ZIndex))
         throw Layout::Layout::InvalidConfigException();
 
@@ -250,6 +251,108 @@ std::unique_ptr<Layout::Section> parseSection(const libconfig::Setting& setting,
     return newSection;
 }
 
+std::optional<Layout::Event::Key> parseKey(const std::string& name)
+{
+    if (name == "ESCAPE")
+        return Layout::Event::Key::Escape;
+    if (name == "SPACE")
+        return Layout::Event::Key::Space;
+    if (name == "SHIFT")
+        return Layout::Event::Key::Shift;
+    if (name == "CONTROL")
+        return Layout::Event::Key::Control;
+    if (name == "ALT")
+        return Layout::Event::Key::Alt;
+    if (name == "ENTER")
+        return Layout::Event::Key::Enter;
+    if (name == "LEFT")
+        return Layout::Event::Key::Left;
+    if (name == "RIGHT")
+        return Layout::Event::Key::Right;
+    if (name == "UP")
+        return Layout::Event::Key::Up;
+    if (name == "DOWN")
+        return Layout::Event::Key::Down;
+    if (name == "DELETE")
+        return Layout::Event::Key::Delete;
+    if (name == "A")
+        return Layout::Event::Key::A;
+    if (name == "B")
+        return Layout::Event::Key::B;
+    if (name == "C")
+        return Layout::Event::Key::C;
+    if (name == "D")
+        return Layout::Event::Key::D;
+    if (name == "E")
+        return Layout::Event::Key::E;
+    if (name == "F")
+        return Layout::Event::Key::F;
+    if (name == "G")
+        return Layout::Event::Key::G;
+    if (name == "H")
+        return Layout::Event::Key::H;
+    if (name == "I")
+        return Layout::Event::Key::I;
+    if (name == "J")
+        return Layout::Event::Key::J;
+    if (name == "K")
+        return Layout::Event::Key::K;
+    if (name == "L")
+        return Layout::Event::Key::L;
+    if (name == "M")
+        return Layout::Event::Key::M;
+    if (name == "N")
+        return Layout::Event::Key::N;
+    if (name == "O")
+        return Layout::Event::Key::O;
+    if (name == "P")
+        return Layout::Event::Key::P;
+    if (name == "Q")
+        return Layout::Event::Key::Q;
+    if (name == "R")
+        return Layout::Event::Key::R;
+    if (name == "S")
+        return Layout::Event::Key::S;
+    if (name == "T")
+        return Layout::Event::Key::T;
+    if (name == "U")
+        return Layout::Event::Key::U;
+    if (name == "V")
+        return Layout::Event::Key::V;
+    if (name == "W")
+        return Layout::Event::Key::W;
+    if (name == "X")
+        return Layout::Event::Key::X;
+    if (name == "Y")
+        return Layout::Event::Key::Y;
+    if (name == "Z")
+        return Layout::Event::Key::Z;
+    return std::nullopt;
+}
+
+bool parseShortcuts(std::unordered_map<Layout::Event::Key, std::string>& map, const libconfig::Setting& shortcutsSettings)
+{
+    if (!shortcutsSettings.isGroup())
+        return false;
+
+    map.clear();
+    for (int i = 0; i < shortcutsSettings.getLength(); ++i) {
+        const libconfig::Setting& shortcut = shortcutsSettings[i];
+        const std::string target = shortcut.getName();
+        const std::string keyName = shortcut;
+
+        auto key = parseKey(keyName);
+        if (!key.has_value())
+            return false;
+        if (target.empty())
+            return false;
+        if (map.contains(*key))
+            return false;
+        map.emplace(*key, target);
+    }
+    return true;
+}
+
 }
 
 void Layout::Layout::load(std::filesystem::path fp)
@@ -268,6 +371,12 @@ void Layout::Layout::load(std::filesystem::path fp)
         throw Layout::Layout::InvalidConfigException();
     if (this->_width <= 0 || this->_height <= 0)
         throw Layout::Layout::InvalidConfigException();
+    if (!layout.exists("shortcuts"))
+        throw Layout::Layout::InvalidConfigException();
+    const libconfig::Setting& shortcuts = layout.lookup("shortcuts");
+    if (!parseShortcuts(this->_shortcuts, shortcuts))
+        throw Layout::Layout::InvalidConfigException();
+    
 
     if (!layout.exists("sections"))
         throw Layout::Layout::InvalidConfigException();
