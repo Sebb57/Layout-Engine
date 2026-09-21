@@ -15,7 +15,6 @@ int main()
             layout.update();
 
             if (layout.handleEvent(event)) {
-                std::cout << "catched" << std::endl;
                 continue;
             }
             if (event.type == Layout::Event::Type::KeyPressed && event.key == Layout::Event::Key::A) {

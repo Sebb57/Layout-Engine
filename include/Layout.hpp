@@ -19,12 +19,14 @@
     #include <optional>
     #include <unordered_map>
     #include <vector>
+    #include <set>
 
 namespace Layout {
 
 class Layout {
     std::unordered_map<std::string, std::unique_ptr<Section>> _sections;
     std::vector<Event> _events;
+    std::set<Event::Key> _heldKeys;
     std::optional<Section*> _selected;
     std::unordered_map<Event::Key, std::string> _shortcuts = {{Event::Key::S, "section1"}}; //TODO: build the map based on config file
     LibName _graphicalLibName = LibName::SFML;
