@@ -7,7 +7,6 @@
 **/
 
 #pragma once
-#include <functional>
 #ifndef LAYOUT_HPP_
     #define LAYOUT_HPP_
 
@@ -20,19 +19,23 @@
     #include <optional>
     #include <unordered_map>
     #include <vector>
+    #include <set>
 
 namespace Layout {
 
 class Layout {
     std::unordered_map<std::string, std::unique_ptr<Section>> _sections;
     std::vector<Event> _events;
+    std::set<Event::Key> _heldKeys;
     std::optional<Section*> _selected;
-    std::unordered_map<std::string, std::string> _shortcuts; //TODO: implement correct shortcuts, the void fnuction is only temporary
+    std::unordered_map<Event::Key, std::string> _shortcuts;
     LibName _graphicalLibName = LibName::SFML;
     std::unique_ptr<IGraphic> _graphicalLib;
     int _width;
     int _height;
     // TODO: dynamic lib
+
+    void openSection(std::string target);
 
     public:
         Layout();
@@ -48,7 +51,7 @@ class Layout {
 
         std::vector<std::string> getData(std::string secId, std::vector<std::string> elemsId);
 
-        void addElem(IElement& element, std::string elemId, std::string secId);
+        void addElem(std::unique_ptr<IElement> element, std::string elemId, std::string secId);
         void popElem(std::string elemId, std::string secId);
 
         class LayoutException : public std::exception {
