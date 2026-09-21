@@ -38,6 +38,7 @@ class Section : public AElement {
         void popElement(std::string name);
         
         void open() { if (this->_id != constants::mainWindowName) this->_hidden = !this->_hidden; }
+        bool handleEvent(Event event) override { (void) event; return false; }
         void update(float deltaTime) override;
         void draw(IGraphic& graphicalLib) override;
 

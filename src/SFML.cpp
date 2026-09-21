@@ -319,6 +319,47 @@ std::queue<Layout::Event> Layout::SFML::listen() const
             event.keyChar = static_cast<char>(sfmlEvent.key.code);
             events.push(event);
         }
+        if (sfmlEvent.type == sf::Event::MouseButtonPressed) {
+            event.type = Event::Type::MouseButtonPressed;
+            event.mouseX = sfmlEvent.mouseMove.x;
+            event.mouseY = sfmlEvent.mouseMove.y;
+            switch (sfmlEvent.mouseButton.button) {
+                case sf::Mouse::Button::Left:
+                    event.mouseButton = Event::MouseButton::Left;
+                    break;
+                case sf::Mouse::Button::Right:
+                    event.mouseButton = Event::MouseButton::Right;
+                    break;
+                case sf::Mouse::Button::Middle:
+                    event.mouseButton = Event::MouseButton::Middle;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (sfmlEvent.type == sf::Event::MouseButtonReleased) {
+            event.type = Event::Type::MouseButtonReleased;
+            event.mouseX = sfmlEvent.mouseMove.x;
+            event.mouseY = sfmlEvent.mouseMove.y;
+            switch (sfmlEvent.mouseButton.button) {
+                case sf::Mouse::Button::Left:
+                    event.mouseButton = Event::MouseButton::Left;
+                    break;
+                case sf::Mouse::Button::Right:
+                    event.mouseButton = Event::MouseButton::Right;
+                    break;
+                case sf::Mouse::Button::Middle:
+                    event.mouseButton = Event::MouseButton::Middle;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (sfmlEvent.type == sf::Event::MouseMoved) {
+            event.type = Event::Type::MouseMoved;
+            event.mouseX = sfmlEvent.mouseMove.x;
+            event.mouseY = sfmlEvent.mouseMove.y;
+        }
     }
 
     return events;
@@ -360,10 +401,6 @@ void Layout::SFML::drawRectangle(Transform transform, Options options) const
     rectangle.setOutlineColor(colorNormalize(options.secondaryColor));
     rectangle.setOutlineThickness(options.outlineThickness);
 
-    std::cout << "REC " << rectangle.getPosition().x << std::endl;
-    std::cout << "REC " << rectangle.getPosition().y << std::endl;
-    std::cout << "REC " << rectangle.getSize().x << std::endl;
-    std::cout << "REC " << rectangle.getSize().y << std::endl << std::endl;
     this->_window->draw(rectangle);
 }
 
@@ -385,11 +422,6 @@ void Layout::SFML::drawCircle(Transform transform, Options options) const
     circle.setOutlineColor(colorNormalize(options.secondaryColor));
     circle.setOutlineThickness(options.outlineThickness);
 
-    std::cout << radius << std::endl;
-    std::cout << circle.getOrigin().x << std::endl;
-    std::cout << circle.getOrigin().y << std::endl;
-    std::cout << "CIR " << circle.getPosition().x << std::endl;
-    std::cout << "CIR " << circle.getPosition().y << std::endl << std::endl;
     this->_window->draw(circle);
 }
 

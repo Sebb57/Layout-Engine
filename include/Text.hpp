@@ -22,6 +22,7 @@ class Text : public AElement {
         Text(std::string content, Transform transform, Options options);
         ~Text() = default;
 
+        bool handleEvent(Event event) override { (void) event; return false; }
         void update(float deltaTime) override;
         void draw(IGraphic& graphicalLib) override;
 

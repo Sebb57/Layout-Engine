@@ -50,7 +50,8 @@ struct Event {
         TextEntered,
         MouseWheelScrolled,
         MouseMoved,
-        MouseButtonPressed
+        MouseButtonPressed,
+        MouseButtonReleased
     };
 
     enum class Key {

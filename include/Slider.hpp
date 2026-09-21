@@ -12,87 +12,125 @@
 
     #include "AElement.hpp"
     #include "Options.hpp"
+    #include <cmath>
     #include <iostream>
 
 namespace Layout {
 
 template <typename T>
 class Slider : public AElement {
+    Transform _filledTransform;
+    Options _filledOptions;
+    Transform _handleTransform;
+    Options _handleOptions;
     T _value;
     T _min;
     T _max;
     T _step;
+    std::pair<unsigned, unsigned> _windowSize;
+    std::pair<int, int> _prevMousePos;
+    bool _holding = false;
+
+    void _updateTransforms(float filled)
+    {
+        this->_filledTransform = this->transform;
+        this->_handleTransform = this->transform;
+
+        this->_filledTransform.Size.x = this->transform.Size.x * filled;
+        this->_filledTransform.Size.offsetX = this->transform.Size.offsetX * filled;
+
+        this->_handleTransform.Size.x = this->transform.Size.y * 0.75 * (static_cast<float>(this->_windowSize.second) / this->_windowSize.first);
+        this->_handleTransform.Size.offsetX = this->transform.Size.offsetY * 0.75 * (static_cast<float>(this->_windowSize.second) / this->_windowSize.first);
+        this->_handleTransform.Size.y = this->_handleTransform.Size.x;
+        this->_handleTransform.Size.offsetY = this->_handleTransform.Size.offsetX;
+
+        this->_handleTransform.Pos.x += this->transform.Size.x * filled;
+        this->_handleTransform.Pos.offsetX += this->transform.Size.offsetX * filled;
+
+        switch (this->transform.AnchX) {
+            case AnchorX::LEFT:
+                this->_handleTransform.Pos.x -= this->_handleTransform.Size.x;
+                this->_handleTransform.Pos.offsetX -= this->_handleTransform.Size.offsetX;
+                break;
+            case AnchorX::MID: 
+                this->_filledTransform.Pos.x -= this->transform.Size.x * (1 - filled) / 2;
+                this->_filledTransform.Pos.offsetX -= this->transform.Size.offsetY * (1 - filled) / 2;
+                this->_handleTransform.Pos.x -= this->transform.Size.x / 2;
+                this->_handleTransform.Pos.offsetX -= this->transform.Size.offsetX / 2;
+                break;
+            case AnchorX::RIGHT:
+                this->_filledTransform.Pos.x -= this->transform.Size.x * (1 - filled);
+                this->_filledTransform.Pos.offsetX -= this->transform.Size.offsetX * (1 - filled);
+                this->_handleTransform.Pos.x -= this->transform.Size.x - this->_handleTransform.Size.x;
+                this->_handleTransform.Pos.offsetX -= this->transform.Size.offsetX - this->_handleTransform.Size.offsetX / 2;
+                break;
+        }
+        switch (this->transform.AnchY) {
+            case AnchorY::TOP:
+                this->_handleTransform.Pos.y -= this->_handleTransform.Size.x * (static_cast<float>(this->_windowSize.first) / this->_windowSize.second) - this->transform.Size.y / 2;
+                this->_handleTransform.Pos.offsetY -= this->_handleTransform.Size.offsetX - this->transform.Size.offsetY / 2;
+                break;
+            case AnchorY::MID:
+                break;
+            case AnchorY::BOTTOM:
+                this->_handleTransform.Pos.y += this->_handleTransform.Size.x * (static_cast<float>(this->_windowSize.first) / this->_windowSize.second) - this->transform.Size.y / 2;
+                this->_handleTransform.Pos.offsetY += this->_handleTransform.Size.offsetX;
+                break;
+        }
+    }
 
     public:
-        Slider(T value, T min, T max, T step, Transform transform, Options options) : AElement(transform, options), _value(value), _min(min), _max(max), _step(step)
+        Slider(T value, T min, T max, T step, Transform transform, Options options)
+            : AElement(transform, options), _filledTransform(transform), _handleTransform(transform), _value(value), _min(min), _max(max), _step(step)
         {
             if (this->_value < this->_min)
                 this->_value = this->_min;
             if (this->_value > this->_max)
                 this->_value = this->_max;
+
+            this->_filledOptions.primaryColor = Color(39, 183, 245, 255);
+            this->_filledOptions.outlineThickness = 0;
+
+            this->_handleOptions.primaryColor = Color(240, 240, 240, 255);
+            this->_handleOptions.secondaryColor = Color(200, 200, 200, 255);
+            this->_handleOptions.outlineThickness = 2;
         }
         ~Slider() = default;
 
+        bool handleEvent(Event event) override
+        {
+            if (event.type == Event::Type::MouseButtonPressed) {
+                if (std::sqrt(std::pow(event.mouseX-(this->_windowSize.first * this->_handleTransform.Pos.x + this->_handleTransform.Pos.offsetX), 2) + std::pow(event.mouseY-(this->_windowSize.second * this->_handleTransform.Pos.y + this->_handleTransform.Pos.offsetY), 2)) <= this->_windowSize.first * this->_handleTransform.Size.x + this->_handleTransform.Size.offsetX) {
+                    this->_holding = true;
+                    this->_prevMousePos.first = event.mouseX;
+                    this->_prevMousePos.second = event.mouseY;
+                    std::cout << "TOUCHÉ" << std::endl;
+                    return true;
+                }
+                std::cout << "PAS TOUCHÉ" << std::endl;
+                return false;
+            }
+            if (event.type == Event::Type::MouseButtonReleased) {
+                this->_holding = false;
+                return true;
+            }
+            if (event.type == Event::Type::MouseMoved && this->_holding) {
+
+            }
+            return false;
+        }
+
         void update(float deltaTime) override {(void) deltaTime;}
-        void draw(IGraphic& graphicalLib)
+        void draw(IGraphic& graphicalLib) override
         {
             float filled = static_cast<float>(this->_value - this->_min) / (this->_max - this->_min);
-            Transform filledTransform = this->transform;
-            Transform handleTransform = this->transform;
-            Options filledOptions = this->_options;
-            auto windowSize = graphicalLib.getWindowSize();
 
-            filledTransform.Size.x = this->transform.Size.x * filled;
-            filledTransform.Size.offsetX = this->transform.Size.offsetX * filled;
-            filledOptions.primaryColor = Color(39, 183, 245, 255);
-            filledOptions.outlineThickness = 0;
-
-            Options handleOptions;
-            handleTransform.Size.x = this->transform.Size.y * 0.75 * (static_cast<float>(windowSize.second) / windowSize.first);
-            handleTransform.Size.offsetX = this->transform.Size.offsetY * 0.75 * (static_cast<float>(windowSize.second) / windowSize.first);
-            handleTransform.Size.y = handleTransform.Size.x;
-            handleTransform.Size.offsetY = handleTransform.Size.offsetX;
-            handleOptions.primaryColor = Color(240, 240, 240, 255);
-            handleOptions.secondaryColor = Color(200, 200, 200, 255);
-            handleOptions.outlineThickness = 2;
-
-            handleTransform.Pos.x += this->transform.Size.x * filled;
-            handleTransform.Pos.offsetX += this->transform.Size.offsetX * filled;
-
-            switch (this->transform.AnchX) {
-                case AnchorX::LEFT:
-                    handleTransform.Pos.x -= handleTransform.Size.x;
-                    handleTransform.Pos.offsetX -= handleTransform.Size.offsetX;
-                    break;
-                case AnchorX::MID: 
-                    filledTransform.Pos.x -= this->transform.Size.x * (1 - filled) / 2;
-                    filledTransform.Pos.offsetX -= this->transform.Size.offsetY * (1 - filled) / 2;
-                    handleTransform.Pos.x -= this->transform.Size.x / 2;
-                    handleTransform.Pos.offsetX -= this->transform.Size.offsetX / 2;
-                    break;
-                case AnchorX::RIGHT:
-                    filledTransform.Pos.x -= this->transform.Size.x * (1 - filled);
-                    filledTransform.Pos.offsetX -= this->transform.Size.offsetX * (1 - filled);
-                    handleTransform.Pos.x -= this->transform.Size.x - handleTransform.Size.x;
-                    handleTransform.Pos.offsetX -= this->transform.Size.offsetX - handleTransform.Size.offsetX / 2;
-                    break;
-            }
-            switch (this->transform.AnchY) {
-                case AnchorY::TOP:
-                    handleTransform.Pos.y -= handleTransform.Size.x * (static_cast<float>(windowSize.first) / windowSize.second) - this->transform.Size.y / 2;
-                    handleTransform.Pos.offsetY -= handleTransform.Size.offsetX - this->transform.Size.offsetY / 2;
-                    break;
-                case AnchorY::MID:
-                    break;
-                case AnchorY::BOTTOM:
-                    handleTransform.Pos.y += handleTransform.Size.x * (static_cast<float>(windowSize.first) / windowSize.second) - this->transform.Size.y / 2;
-                    handleTransform.Pos.offsetY += handleTransform.Size.offsetX;
-                    break;
-            }
+            this->_windowSize = graphicalLib.getWindowSize();
+            this->_updateTransforms(filled);
 
             graphicalLib.drawRectangle(this->transform, this->_options);
-            graphicalLib.drawRectangle(filledTransform, filledOptions);
-            graphicalLib.drawCircle(handleTransform, handleOptions);
+            graphicalLib.drawRectangle(this->_filledTransform, this->_filledOptions);
+            graphicalLib.drawCircle(this->_handleTransform, this->_handleOptions);
         }
 };
 
