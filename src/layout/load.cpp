@@ -424,11 +424,11 @@ void Layout::Layout::load(std::filesystem::path fp)
         throw Layout::Layout::InvalidConfigException();
     if (this->_width <= 0 || this->_height <= 0)
         throw Layout::Layout::InvalidConfigException();
-    if (!layout.exists("shortcuts"))
-        throw Layout::Layout::InvalidConfigException();
-    const libconfig::Setting& shortcuts = layout.lookup("shortcuts");
-    if (!parseShortcuts(this->_shortcuts, shortcuts))
-        throw Layout::Layout::InvalidConfigException();
+    if (layout.exists("shortcuts")) {
+        const libconfig::Setting& shortcuts = layout.lookup("shortcuts");
+        if (!parseShortcuts(this->_shortcuts, shortcuts))
+            throw Layout::Layout::InvalidConfigException();
+    }
     
 
     if (!layout.exists("sections"))
