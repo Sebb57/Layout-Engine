@@ -12,8 +12,8 @@
 #include <cmath>
 #include <iostream>
 #include <queue>
-#include <thread>
 #include <SFML/Graphics.hpp>
+#include <thread>
 
 namespace {
 
@@ -49,7 +49,7 @@ T getAnchorPoint(Layout::Transform transform, T windowSize)
 
 inline sf::Vector2f getPosFromTransform(Layout::Rect rect, sf::Vector2u windowSize, sf::Vector2u anchorPoint)
 {
-    return {anchorPoint.x + windowSize.x * rect.x + rect.offsetX, anchorPoint.y + windowSize.y * rect.y + rect.offsetY};
+    return {anchorPoint.x + rect.x * windowSize.x + rect.offsetX, anchorPoint.y + rect.y * windowSize.y + rect.offsetY};
 }
 
 inline sf::Vector2f getSizeFromTransform(Layout::Rect rect, sf::Vector2u windowSize)
@@ -351,6 +351,7 @@ void Layout::SFML::drawRectangle(Transform transform, Options options) const
         return;
     sf::Vector2u windowSize = this->_window->getSize();
     sf::Vector2u anchorPoint = getAnchorPoint<sf::Vector2u>(transform, windowSize);
+
     rectangle.setPosition(getPosFromTransform(transform.Pos, windowSize, anchorPoint));
     rectangle.setSize(getSizeFromTransform(transform.Size, windowSize));
     rectangle.setOrigin(getAnchorPoint<sf::Vector2f>(transform, rectangle.getSize()));
@@ -358,7 +359,38 @@ void Layout::SFML::drawRectangle(Transform transform, Options options) const
     rectangle.setFillColor(colorNormalize(options.primaryColor));
     rectangle.setOutlineColor(colorNormalize(options.secondaryColor));
     rectangle.setOutlineThickness(options.outlineThickness);
+
+    std::cout << "REC " << rectangle.getPosition().x << std::endl;
+    std::cout << "REC " << rectangle.getPosition().y << std::endl;
+    std::cout << "REC " << rectangle.getSize().x << std::endl;
+    std::cout << "REC " << rectangle.getSize().y << std::endl << std::endl;
     this->_window->draw(rectangle);
+}
+
+void Layout::SFML::drawCircle(Transform transform, Options options) const
+{
+    sf::CircleShape circle;
+
+    if (!this->_isOpen || !this->_window)
+        return;
+    sf::Vector2u windowSize = this->_window->getSize();
+    sf::Vector2u anchorPoint = getAnchorPoint<sf::Vector2u>(transform, windowSize);
+    float radius = getSizeFromTransform(transform.Size, windowSize).x;
+
+    circle.setPosition(getPosFromTransform(transform.Pos, windowSize, anchorPoint));
+    circle.setRadius(radius);
+    circle.setOrigin(getAnchorPoint<sf::Vector2f>(transform, {radius*2, radius*2}));
+    circle.setRotation(options.angle);
+    circle.setFillColor(colorNormalize(options.primaryColor));
+    circle.setOutlineColor(colorNormalize(options.secondaryColor));
+    circle.setOutlineThickness(options.outlineThickness);
+
+    std::cout << radius << std::endl;
+    std::cout << circle.getOrigin().x << std::endl;
+    std::cout << circle.getOrigin().y << std::endl;
+    std::cout << "CIR " << circle.getPosition().x << std::endl;
+    std::cout << "CIR " << circle.getPosition().y << std::endl << std::endl;
+    this->_window->draw(circle);
 }
 
 void Layout::SFML::drawImage(Transform transform, std::filesystem::path path, Options options) const
@@ -397,6 +429,7 @@ void Layout::SFML::drawText(Transform transform, std::string text, Options optio
     sf::Text sfmlText;
     sf::Vector2u windowSize = this->_window->getSize();
     sf::Vector2u anchorPoint = getAnchorPoint<sf::Vector2u>(transform, windowSize);
+
     sfmlText.setFont(sfmlFont);
     sfmlText.setCharacterSize(windowSize.x * transform.Size.x + transform.Size.x);
     sfmlText.setFillColor(colorNormalize(options.primaryColor));
@@ -406,6 +439,13 @@ void Layout::SFML::drawText(Transform transform, std::string text, Options optio
 
     sfmlText.setPosition(getPosFromTransform(transform.Pos, windowSize, anchorPoint));
     this->_window->draw(sfmlText);
+}
+
+std::pair<unsigned, unsigned> Layout::SFML::getWindowSize() const noexcept
+{
+    sf::Vector2u windowSize = this->_window->getSize();
+
+    return { windowSize.x, windowSize.y };
 }
 
 extern "C" {

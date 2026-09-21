@@ -9,8 +9,6 @@
 #ifndef COMPONENT_HPP_
 #define COMPONENT_HPP_
 
-#include <cstdint>
-
 namespace Layout {
 
 enum class LibName {
@@ -32,8 +30,8 @@ enum class AnchorY {
 struct Rect {
     float x;
     float y;
-    uint32_t offsetX;
-    uint32_t offsetY;
+    int offsetX;
+    int offsetY;
 };
 
 struct Transform {
