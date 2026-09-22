@@ -99,7 +99,7 @@ class Slider : public AElement {
 
         bool handleEvent(Event event) override
         {
-            if (event.type == Event::Type::MouseButtonPressed) {
+            if (event.type == Event::Type::MouseButtonPressed && event.mouseButton == Event::MouseButton::Left) {
                 float handleX = this->_windowSize.first * this->_handleTransform.Pos.x + this->_handleTransform.Pos.offsetX + -(static_cast<float>(this->_handleTransform.AnchX) - 1) * (this->_windowSize.first * this->_handleTransform.Size.x + this->_handleTransform.Size.offsetX) + static_cast<float>(this->_handleTransform.AnchX) / 2 * this->_windowSize.first;
                 float handleY = this->_windowSize.second * this->_handleTransform.Pos.y + this->_handleTransform.Pos.offsetY + -(static_cast<float>(this->_handleTransform.AnchY) - 1) * (this->_windowSize.first * this->_handleTransform.Size.x + this->_handleTransform.Size.offsetX) + static_cast<float>(this->_handleTransform.AnchY) / 2 * this->_windowSize.second;
                 float radius = this->_windowSize.first * this->_handleTransform.Size.x + this->_handleTransform.Size.offsetX + this->_handleOptions.outlineThickness;
@@ -112,13 +112,13 @@ class Slider : public AElement {
                 }
                 return false;
             }
-            if (event.type == Event::Type::MouseButtonReleased && this->_holding) {
+            if (event.type == Event::Type::MouseButtonReleased && event.mouseButton == Event::MouseButton::Left && this->_holding) {
                 this->_handleOptions.primaryColor = Color(240, 240, 240, 255);
                 this->_holding = false;
                 return true;
             }
             if (event.type == Event::Type::MouseMoved && this->_holding) {
-
+                std::cout << "MOVED" << std::endl;
             }
             return false;
         }
