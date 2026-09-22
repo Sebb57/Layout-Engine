@@ -23,12 +23,13 @@ class Slider : public AElement {
     Options _filledOptions;
     Transform _handleTransform;
     Options _handleOptions;
+    std::pair<unsigned, unsigned> _windowSize;
+    std::pair<int, int> _prevMousePos;
     T _value;
     T _min;
     T _max;
     T _step;
-    std::pair<unsigned, unsigned> _windowSize;
-    std::pair<int, int> _prevMousePos;
+    T _prevValue;
     bool _holding = false;
 
     void _updateTransforms(float filled)
@@ -106,6 +107,7 @@ class Slider : public AElement {
                 if (std::sqrt(std::pow(event.mouseX - handleX, 2) + std::pow(event.mouseY - handleY, 2)) <= radius) {
                     this->_holding = true;
                     this->_prevMousePos = {event.mouseX, event.mouseY};
+                    this->_prevValue = this->_value;
                     this->_handleOptions.primaryColor = Color(200, 200, 200, 255);
                     return true;
                 }
@@ -117,7 +119,12 @@ class Slider : public AElement {
                 return true;
             }
             if (event.type == Event::Type::MouseMoved && this->_holding) {
-                
+                float diffMouseX = event.mouseX - this->_prevMousePos.first;
+                float diffMouseY = event.mouseY - this->_prevMousePos.second;
+                float diffFilledX = std::cos(this->_options.angle) * diffMouseX / (this->transform.Size.x * this->_windowSize.first + this->transform.Size.offsetX);
+                float diffFilledY = std::sin(this->_options.angle) * diffMouseY / (this->transform.Size.y * this->_windowSize.second + this->transform.Size.offsetY);
+                this->_value = std::min(std::max(static_cast<T>(this->_prevValue + (this->_max - this->_min) * (diffFilledX + diffFilledY)), this->_min), this->_max);
+                std::cout << this->_value << std::endl;
             }
             return false;
         }

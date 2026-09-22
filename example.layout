@@ -12,27 +12,55 @@ layout = {
             pos = { x = 0.0; y = 0.0; offsetX = 0; offsetY = 0; };
             size = { x = 30.0; y = 30.0; };
             elements = {
-                helloWorld = {
-                    type = "text";
-                    content = "hello world";
+                sliderTest = {
+                    type = "slider";
                     anchX = "middle";
                     anchY = "middle";
                     pos = { x = 0.0; y = 0.0; offsetX = 0; offsetY = 0; };
-                    size = { x = 0.02; y = 0.02; };
-                    borderColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
-                    textColor = { r = 0.0; g = 255.0; b = 0.0; a = 255.0; };
-                    ZIndex = 1;
+                    size = { x = 0.2; y = 0.05; offsetX = 0; offsetY = 0; };
+                    fillColor = { r = 80.0; g = 80.0; b = 80.0; a = 255.0; };
+                    borderColor = { r = 120.0; g = 120.0; b = 120.0; a = 255.0; };
+                    outlineThickness = 2;
+                    ZIndex = 2;
+                    valueType = "float";
+                    min = "0";
+                    max = "10";
+                    step = "1";
+                    value = "5";
                 };
 
-                rectangleBlue = {
-                    type = "rectangle";
-                    anchX = "middle";
-                    anchY = "middle";
-                    pos = { x = 0.0; y = 0.0; offsetX = 0; offsetY = 0; };
-                    size = { x = 25.0; y = 25.0; };
-                    fillColor = { r = 0.0; g = 0.0; b = 255.0; a = 255.0; };
-                    borderColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
-                    ZIndex = 0;
+                sliderTest2 = {
+                    type = "slider";
+                    anchX = "left";
+                    anchY = "top";
+                    pos = { x = 0.1; y = 0.1; offsetX = 0; offsetY = 0; };
+                    size = { x = 0.2; y = 0.05; offsetX = 0; offsetY = 0; };
+                    fillColor = { r = 80.0; g = 80.0; b = 80.0; a = 255.0; };
+                    borderColor = { r = 120.0; g = 120.0; b = 120.0; a = 255.0; };
+                    outlineThickness = 2;
+                    ZIndex = 2;
+                    valueType = "int";
+                    min = "0";
+                    max = "10";
+                    step = "1";
+                    value = "5";
+                };
+                
+                sliderTest3 = {
+                    type = "slider";
+                    anchX = "right";
+                    anchY = "bottom";
+                    pos = { x = -0.1; y = -0.1; offsetX = 0; offsetY = 0; };
+                    size = { x = 0.2; y = 0.05; offsetX = 0; offsetY = 0; };
+                    fillColor = { r = 80.0; g = 80.0; b = 80.0; a = 255.0; };
+                    borderColor = { r = 120.0; g = 120.0; b = 120.0; a = 255.0; };
+                    outlineThickness = 2;
+                    ZIndex = 2;
+                    valueType = "int";
+                    min = "0";
+                    max = "10";
+                    step = "1";
+                    value = "5";
                 };
             };
         };
