@@ -23,9 +23,9 @@ class IElement {
         virtual bool handleEvent(Event event) = 0;
         virtual void update(float deltaTime) = 0;
         virtual void draw(IGraphic& graphicalLib) = 0;
-        virtual int getZIndex() const noexcept = 0;
+        [[nodiscard]] virtual int getZIndex() const noexcept = 0;
 };
 
-}
+} // namespace Layout
 
 #endif /* IELEMENT_HPP_ */

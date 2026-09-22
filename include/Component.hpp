@@ -111,6 +111,6 @@ struct Event {
     int mouseY = 0;
 };
 
-}
+} // namespace Layout
 
 #endif /* COMPONENT_HPP_ */

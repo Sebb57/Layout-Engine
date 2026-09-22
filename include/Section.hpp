@@ -28,8 +28,8 @@ class Section : public AElement {
     bool _hidden;
 
     public:
-        Section(Transform transform, std::string id, bool hidden, Options options) : AElement(transform, options), _id(id), _hidden(hidden) {}
-        ~Section() = default;
+        Section(Transform transform, std::string id, bool hidden, Options options) : AElement(transform, options), _id(std::move(std::move(id))), _hidden(hidden) {}
+        ~Section() override = default;
 
         std::unordered_map<std::string, std::unique_ptr<IElement>>& getElementsMap() { return this->_elementMap; }
         std::vector<std::pair<int, std::string>>& getElementsSorted() { return this->_elementSorted; }
@@ -45,7 +45,7 @@ class Section : public AElement {
 
 };
 
-}
+} // namespace Layout
 
 #endif /* SECTION_HPP_ */
 

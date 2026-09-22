@@ -19,7 +19,7 @@ struct Color {
     Color(float r, float g, float b, float a = 255) : r(r), g(g), b(b), a(a) {}
 };
 
-}
+} // namespace Layout
 
 #endif /* COLOR_HPP_ */
 

@@ -18,7 +18,8 @@
     #include <memory>
     #include <optional>
     #include <unordered_map>
-    #include <vector>
+    #include <utility>
+#include <vector>
     #include <set>
 
 namespace Layout {
@@ -60,9 +61,9 @@ class Layout {
             protected:
                 std::string _msg;
             public:
-                LayoutException(std::string msg) : _msg(msg) {}
+                LayoutException(std::string msg) : _msg(std::move(std::move(msg))) {}
 
-                virtual const char* what() const noexcept { return this->_msg.c_str(); }
+                [[nodiscard]] const char* what() const noexcept override { return this->_msg.c_str(); }
         };
 
         class InvalidConfigException : public LayoutException {
@@ -72,6 +73,6 @@ class Layout {
 
 };
 
-}
+} // namespace Layout
 
 #endif /* LAYOUT_HPP_ */

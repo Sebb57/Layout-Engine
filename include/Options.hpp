@@ -17,11 +17,11 @@ namespace Layout {
 struct Options {
     Color primaryColor = { 0, 0, 0, 255 };
     Color secondaryColor = { 255, 255, 255, 255 };
-    float outlineThickness = 0.f;
-    float angle = 0.f;
+    float outlineThickness = 0.F;
+    float angle = 0.F;
     int zIndex = 0;
 };
 
-}
+} // namespace Layout
 
 #endif /* OPTIONS_HPP_ */

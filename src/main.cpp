@@ -1,7 +1,5 @@
+#include <exception>
 #include <iostream>
-#include <libconfig.h++>
-#include <vector>
-#include "Component.hpp"
 #include "Layout.hpp"
 
 int main()
@@ -26,7 +24,7 @@ int main()
             layout.draw();
         }
     } catch (const std::exception& e) {
-        std::cerr << "std::exception: " << e.what() << std::endl;
+        std::cerr << "std::exception: " << e.what() << '\n';
         return -1;
     }
     return 0;
