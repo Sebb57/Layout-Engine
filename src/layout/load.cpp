@@ -9,6 +9,7 @@
 #include "Component.hpp"
 #include "constants.hpp"
 #include "Image.hpp"
+#include "InputBox.hpp"
 #include "Layout.hpp"
 #include "Options.hpp"
 #include "Rectangle.hpp"
@@ -220,6 +221,31 @@ std::unique_ptr<Layout::IElement> parseSlider(const libconfig::Setting& setting,
     return std::make_unique<Layout::Slider<long double>>(std::stold(value), std::stold(min), std::stold(max), std::stold(step), transform, options);
 }
 
+std::unique_ptr<Layout::IElement> parseInputBox(const libconfig::Setting& setting, Layout::Transform transform)
+{
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("ZIndex"))
+        throw Layout::Layout::InvalidConfigException();
+
+    const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
+    const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
+    unsigned outlineThickness;
+    int ZIndex = 0;
+    std::string value = "";
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("ZIndex", ZIndex) || !setting.lookupValue("outlineThickness", outlineThickness)
+        || !setting.lookupValue("value", value))
+        throw Layout::Layout::InvalidConfigException();
+
+    Layout::Color borderColor = parseColor(borderColorSetting);
+    Layout::Color fillColor = parseColor(fillColorSetting);
+    Layout::Options options;
+    options.primaryColor = fillColor;
+    options.secondaryColor = borderColor;
+    options.outlineThickness = outlineThickness;
+    options.zIndex = ZIndex;
+
+    return std::make_unique<Layout::InputBox>(value, transform, options);
+}
+
 Layout::Transform parseTransform(const libconfig::Setting& setting, bool absolute)
 {
     if (!setting.exists("pos") || !setting.exists("size"))
@@ -262,6 +288,10 @@ std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting
     if (type == "slider") {
         transform = parseTransform(setting, false);
         return parseSlider(setting, transform);
+    }
+    if (type == "inputBox") {
+        transform = parseTransform(setting, false);
+        return parseInputBox(setting, transform);
     }
     throw Layout::Layout::InvalidConfigException();
 }

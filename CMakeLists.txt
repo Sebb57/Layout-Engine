@@ -27,6 +27,7 @@ endif()
 
 add_library(Layout SHARED
     src/Element/Image.cpp
+    src/Element/InputBox.cpp
     src/Element/Rectangle.cpp
     src/Element/Text.cpp
 
