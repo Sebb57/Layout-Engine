@@ -100,17 +100,20 @@ class Slider : public AElement {
         bool handleEvent(Event event) override
         {
             if (event.type == Event::Type::MouseButtonPressed) {
-                if (std::sqrt(std::pow(event.mouseX-(this->_windowSize.first * this->_handleTransform.Pos.x + this->_handleTransform.Pos.offsetX), 2) + std::pow(event.mouseY-(this->_windowSize.second * this->_handleTransform.Pos.y + this->_handleTransform.Pos.offsetY), 2)) <= this->_windowSize.first * this->_handleTransform.Size.x + this->_handleTransform.Size.offsetX) {
+                float handleX = this->_windowSize.first * this->_handleTransform.Pos.x + this->_handleTransform.Pos.offsetX + -(static_cast<float>(this->_handleTransform.AnchX) - 1) * (this->_windowSize.first * this->_handleTransform.Size.x + this->_handleTransform.Size.offsetX) + static_cast<float>(this->_handleTransform.AnchX) / 2 * this->_windowSize.first;
+                float handleY = this->_windowSize.second * this->_handleTransform.Pos.y + this->_handleTransform.Pos.offsetY + -(static_cast<float>(this->_handleTransform.AnchY) - 1) * (this->_windowSize.first * this->_handleTransform.Size.x + this->_handleTransform.Size.offsetX) + static_cast<float>(this->_handleTransform.AnchY) / 2 * this->_windowSize.second;
+                float radius = this->_windowSize.first * this->_handleTransform.Size.x + this->_handleTransform.Size.offsetX + this->_handleOptions.outlineThickness;
+                if (std::sqrt(std::pow(event.mouseX - handleX, 2) + std::pow(event.mouseY - handleY, 2)) <= radius) {
                     this->_holding = true;
                     this->_prevMousePos.first = event.mouseX;
                     this->_prevMousePos.second = event.mouseY;
-                    std::cout << "TOUCHÉ" << std::endl;
+                    this->_handleOptions.primaryColor = Color(200, 200, 200, 255);
                     return true;
                 }
-                std::cout << "PAS TOUCHÉ" << std::endl;
                 return false;
             }
-            if (event.type == Event::Type::MouseButtonReleased) {
+            if (event.type == Event::Type::MouseButtonReleased && this->_holding) {
+                this->_handleOptions.primaryColor = Color(240, 240, 240, 255);
                 this->_holding = false;
                 return true;
             }

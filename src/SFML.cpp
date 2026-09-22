@@ -321,8 +321,9 @@ std::queue<Layout::Event> Layout::SFML::listen() const
         }
         if (sfmlEvent.type == sf::Event::MouseButtonPressed) {
             event.type = Event::Type::MouseButtonPressed;
-            event.mouseX = sfmlEvent.mouseMove.x;
-            event.mouseY = sfmlEvent.mouseMove.y;
+            sf::Vector2i mousePos = sf::Mouse::getPosition(*this->_window);
+            event.mouseX = mousePos.x;
+            event.mouseY = mousePos.y;
             switch (sfmlEvent.mouseButton.button) {
                 case sf::Mouse::Button::Left:
                     event.mouseButton = Event::MouseButton::Left;
@@ -340,8 +341,9 @@ std::queue<Layout::Event> Layout::SFML::listen() const
         }
         if (sfmlEvent.type == sf::Event::MouseButtonReleased) {
             event.type = Event::Type::MouseButtonReleased;
-            event.mouseX = sfmlEvent.mouseMove.x;
-            event.mouseY = sfmlEvent.mouseMove.y;
+            sf::Vector2i mousePos = sf::Mouse::getPosition(*this->_window);
+            event.mouseX = mousePos.x;
+            event.mouseY = mousePos.y;
             switch (sfmlEvent.mouseButton.button) {
                 case sf::Mouse::Button::Left:
                     event.mouseButton = Event::MouseButton::Left;
@@ -359,8 +361,9 @@ std::queue<Layout::Event> Layout::SFML::listen() const
         }
         if (sfmlEvent.type == sf::Event::MouseMoved) {
             event.type = Event::Type::MouseMoved;
-            event.mouseX = sfmlEvent.mouseMove.x;
-            event.mouseY = sfmlEvent.mouseMove.y;
+            sf::Vector2i mousePos = sf::Mouse::getPosition(*this->_window);
+            event.mouseX = mousePos.x;
+            event.mouseY = mousePos.y;
             events.push(event);
         }
     }
