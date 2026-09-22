@@ -105,8 +105,7 @@ class Slider : public AElement {
                 float radius = this->_windowSize.first * this->_handleTransform.Size.x + this->_handleTransform.Size.offsetX + this->_handleOptions.outlineThickness;
                 if (std::sqrt(std::pow(event.mouseX - handleX, 2) + std::pow(event.mouseY - handleY, 2)) <= radius) {
                     this->_holding = true;
-                    this->_prevMousePos.first = event.mouseX;
-                    this->_prevMousePos.second = event.mouseY;
+                    this->_prevMousePos = {event.mouseX, event.mouseY};
                     this->_handleOptions.primaryColor = Color(200, 200, 200, 255);
                     return true;
                 }
@@ -118,7 +117,7 @@ class Slider : public AElement {
                 return true;
             }
             if (event.type == Event::Type::MouseMoved && this->_holding) {
-                std::cout << "MOVED" << std::endl;
+                
             }
             return false;
         }
