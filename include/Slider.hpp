@@ -124,7 +124,6 @@ class Slider : public AElement {
                 float diffFilledX = std::cos(this->_options.angle) * diffMouseX / (this->transform.Size.x * this->_windowSize.first + this->transform.Size.offsetX);
                 float diffFilledY = std::sin(this->_options.angle) * diffMouseY / (this->transform.Size.y * this->_windowSize.second + this->transform.Size.offsetY);
                 this->_value = std::min(std::max(static_cast<T>(this->_prevValue + (this->_max - this->_min) * (diffFilledX + diffFilledY)), this->_min), this->_max);
-                std::cout << this->_value << std::endl;
             }
             return false;
         }
