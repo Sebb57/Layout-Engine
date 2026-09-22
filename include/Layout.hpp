@@ -44,12 +44,14 @@ class Layout {
         void save(std::filesystem::path fp);
         void load(std::filesystem::path fp);
 
+        bool handleEvents();
         bool handleEvent(Event& event);
         void update();
         void close();
         void draw();
 
         std::vector<std::string> getData(std::string secId, std::vector<std::string> elemsId);
+        bool isOpen() { return this->_graphicalLib->isOpen(); }
 
         void addElem(std::unique_ptr<IElement> element, std::string elemId, std::string secId);
         void popElem(std::string elemId, std::string secId);

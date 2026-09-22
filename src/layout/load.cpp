@@ -7,16 +7,18 @@
 **/
 
 #include "Component.hpp"
+#include "constants.hpp"
+#include "Image.hpp"
 #include "Layout.hpp"
 #include "Options.hpp"
-#include "constants.hpp"
 #include "Rectangle.hpp"
+#include "Slider.hpp"
 #include "Text.hpp"
-#include "Image.hpp"
 #include <filesystem>
 #include <iostream>
 #include <libconfig.h++>
 #include <memory>
+#include <iostream>
 
 namespace {
 
@@ -111,8 +113,9 @@ std::unique_ptr<Layout::IElement> parseRectangle(const libconfig::Setting& setti
 
     const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
+    unsigned outlineThickness;
     int ZIndex = 0;
-    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("ZIndex", ZIndex))
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("ZIndex", ZIndex) || !setting.lookupValue("outlineThickness", outlineThickness))
         throw Layout::Layout::InvalidConfigException();
 
     Layout::Color borderColor = parseColor(borderColorSetting);
@@ -120,6 +123,7 @@ std::unique_ptr<Layout::IElement> parseRectangle(const libconfig::Setting& setti
     Layout::Options options;
     options.primaryColor = fillColor;
     options.secondaryColor = borderColor;
+    options.outlineThickness = outlineThickness;
     options.zIndex = ZIndex;
 
     return std::make_unique<Layout::Rectangle>(transform, options);
@@ -133,8 +137,10 @@ std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting, L
     std::string content;
     const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
     const libconfig::Setting& textColorSetting = setting.lookup("textColor");
+    unsigned outlineThickness;
     int ZIndex = 0;
-    if (!borderColorSetting.isGroup() || !textColorSetting.isGroup() || !setting.lookupValue("content", content) || !setting.lookupValue("ZIndex", ZIndex))
+    if (!borderColorSetting.isGroup() || !textColorSetting.isGroup() || !setting.lookupValue("content", content) || !setting.lookupValue("ZIndex", ZIndex)
+        || !setting.lookupValue("outlineThickness", outlineThickness))
         throw Layout::Layout::InvalidConfigException();
 
     Layout::Color borderColor = parseColor(borderColorSetting);
@@ -143,6 +149,7 @@ std::unique_ptr<Layout::IElement> parseText(const libconfig::Setting& setting, L
     Layout::Options options;
     options.primaryColor = textColor;
     options.secondaryColor = borderColor;
+    options.outlineThickness = outlineThickness;
     options.zIndex = ZIndex;
 
     return std::make_unique<Layout::Text>(content, transform, options);
@@ -168,7 +175,49 @@ std::unique_ptr<Layout::IElement> parseImage(const libconfig::Setting& setting, 
     options.zIndex = ZIndex;
 
     return std::make_unique<Layout::Image>(transform, path, options);
+}
 
+std::unique_ptr<Layout::IElement> parseSlider(const libconfig::Setting& setting, Layout::Transform transform)
+{
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("ZIndex"))
+        throw Layout::Layout::InvalidConfigException();
+
+    const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
+    const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
+    unsigned outlineThickness;
+    int ZIndex;
+    std::string valueType;
+    std::string min;
+    std::string max;
+    std::string step;
+    std::string value;
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("ZIndex", ZIndex) || !setting.lookupValue("outlineThickness", outlineThickness)
+        || !setting.lookupValue("valueType", valueType)|| !setting.lookupValue("min", min) || !setting.lookupValue("max", max) || !setting.lookupValue("value", value) || !setting.lookupValue("value", step))
+        throw Layout::Layout::InvalidConfigException();
+
+    Layout::Color borderColor = parseColor(borderColorSetting);
+    Layout::Color fillColor = parseColor(fillColorSetting);
+    Layout::Options options;
+    options.primaryColor = fillColor;
+    options.secondaryColor = borderColor;
+    options.outlineThickness = outlineThickness;
+    options.zIndex = ZIndex;
+
+    if (valueType == "int")
+        return std::make_unique<Layout::Slider<int>>(std::stoi(value), std::stoi(min), std::stoi(max), std::stoi(step), transform, options);
+    if (valueType == "long")
+        return std::make_unique<Layout::Slider<long>>(std::stol(value), std::stol(min), std::stol(max), std::stol(step), transform, options);
+    if (valueType == "longlong")
+        return std::make_unique<Layout::Slider<long long>>(std::stoll(value), std::stoll(min), std::stoll(max), std::stoll(step), transform, options);
+    if (valueType == "ulong")
+        return std::make_unique<Layout::Slider<unsigned long>>(std::stoul(value), std::stoul(min), std::stoul(max), std::stoul(step), transform, options);
+    if (valueType == "ulonglong")
+        return std::make_unique<Layout::Slider<unsigned long long>>(std::stoull(value), std::stoull(min), std::stoull(max), std::stoull(step), transform, options);
+    if (valueType == "float")
+        return std::make_unique<Layout::Slider<float>>(std::stof(value), std::stof(min), std::stof(max), std::stof(step), transform, options);
+    if (valueType == "double")
+        return std::make_unique<Layout::Slider<double>>(std::stod(value), std::stod(min), std::stod(max), std::stod(step), transform, options);
+    return std::make_unique<Layout::Slider<long double>>(std::stold(value), std::stold(min), std::stold(max), std::stold(step), transform, options);
 }
 
 Layout::Transform parseTransform(const libconfig::Setting& setting, bool absolute)
@@ -209,6 +258,10 @@ std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting
     if (type == "image") {
         transform = parseTransform(setting, false);
         return parseImage(setting, transform);
+    }
+    if (type == "slider") {
+        transform = parseTransform(setting, false);
+        return parseSlider(setting, transform);
     }
     throw Layout::Layout::InvalidConfigException();
 }
@@ -371,11 +424,11 @@ void Layout::Layout::load(std::filesystem::path fp)
         throw Layout::Layout::InvalidConfigException();
     if (this->_width <= 0 || this->_height <= 0)
         throw Layout::Layout::InvalidConfigException();
-    if (!layout.exists("shortcuts"))
-        throw Layout::Layout::InvalidConfigException();
-    const libconfig::Setting& shortcuts = layout.lookup("shortcuts");
-    if (!parseShortcuts(this->_shortcuts, shortcuts))
-        throw Layout::Layout::InvalidConfigException();
+    if (layout.exists("shortcuts")) {
+        const libconfig::Setting& shortcuts = layout.lookup("shortcuts");
+        if (!parseShortcuts(this->_shortcuts, shortcuts))
+            throw Layout::Layout::InvalidConfigException();
+    }
     
 
     if (!layout.exists("sections"))
@@ -403,4 +456,6 @@ void Layout::Layout::load(std::filesystem::path fp)
     }
     if (!mainFound)
         throw Layout::Layout::InvalidConfigException();
+
+    this->_graphicalLib->open(this->_width, this->_height, "Layout Engine");
 }

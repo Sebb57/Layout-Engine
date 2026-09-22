@@ -23,6 +23,7 @@ class Image : public AElement {
         Image(Transform transform, std::string path, Options options);
         ~Image() = default;
 
+        bool handleEvent(Event event) override { (void) event; return false; }
         void update(float deltaTime) override;
         void draw(IGraphic& graphicalLib) override;
 };

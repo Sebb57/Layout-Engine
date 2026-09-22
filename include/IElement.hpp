@@ -20,6 +20,7 @@ class IElement {
     public:
         virtual ~IElement() = default;
 
+        virtual bool handleEvent(Event event) = 0;
         virtual void update(float deltaTime) = 0;
         virtual void draw(IGraphic& graphicalLib) = 0;
         virtual int getZIndex() const noexcept = 0;

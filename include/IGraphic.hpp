@@ -43,8 +43,11 @@ namespace Layout {
             virtual bool isOpen() const noexcept = 0;
 
             virtual void drawRectangle(Transform transform, Options options) const = 0;
+            virtual void drawCircle(Transform transform, Options options) const = 0;
             virtual void drawImage(Transform transform, std::filesystem::path path, Options options) const = 0;
             virtual void drawText(Transform transform, std::string text, Options options, std::filesystem::path font = "./assets/Arial Regular.ttf") const = 0;
+
+            virtual std::pair<unsigned, unsigned> getWindowSize() const noexcept = 0;
 
             IGraphic& operator=(const IGraphic& object) = delete;
             IGraphic& operator=(IGraphic&& object) = delete;
