@@ -33,7 +33,8 @@ class Section : public AElement {
 
         std::unordered_map<std::string, std::unique_ptr<IElement>>& getElementsMap() { return this->_elementMap; }
         std::vector<std::pair<int, std::string>>& getElementsSorted() { return this->_elementSorted; }
-        std::string getData(std::string id);
+        [[nodiscard]] std::string getData() const noexcept final { return ""; }
+        [[nodiscard]] std::string getData(std::string id);
         bool addElement(std::string name, std::unique_ptr<IElement> element);
         void popElement(std::string name);
         bool isMouseInside(std::pair<int, int> mousePos, std::pair<unsigned, unsigned> windowSize);

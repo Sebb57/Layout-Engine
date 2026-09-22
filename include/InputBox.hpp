@@ -83,6 +83,7 @@ class InputBox : public AElement {
             graphicalLib.drawRectangle(this->transform, this->_options);
             graphicalLib.drawText(this->_textTransform, !this->_value.empty() ? this->_value : "Enter text...", this->_textOptions);
         }
+        [[nodiscard]] std::string getData() const noexcept final { return this->_value; }
 };
 
 }
