@@ -26,6 +26,8 @@ class Image : public AElement {
         bool handleEvent(Event event) override { (void) event; return false; }
         void update(float deltaTime) override;
         void draw(IGraphic& graphicalLib) override;
+
+        [[nodiscard]] std::string getData() const noexcept final { return ""; }
 };
 
 }

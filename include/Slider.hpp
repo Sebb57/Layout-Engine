@@ -7,6 +7,7 @@
 **/
 
 #pragma once
+#include <string>
 #ifndef SLIDER_HPP_
     #define SLIDER_HPP_
 
@@ -140,6 +141,8 @@ class Slider : public AElement {
             graphicalLib.drawRectangle(this->_filledTransform, this->_filledOptions);
             graphicalLib.drawCircle(this->_handleTransform, this->_handleOptions);
         }
+
+        [[nodiscard]] std::string getData() const noexcept final { return std::to_string(this->_value); }
 };
 
 }

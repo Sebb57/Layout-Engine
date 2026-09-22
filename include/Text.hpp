@@ -26,7 +26,7 @@ class Text : public AElement {
         void update(float deltaTime) override;
         void draw(IGraphic& graphicalLib) override;
 
-        std::string getContent() { return this->_content; }
+        [[nodiscard]] std::string getData() const noexcept final { return this->_content; }
 };
 
 }

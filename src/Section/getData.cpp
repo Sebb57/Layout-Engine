@@ -13,8 +13,5 @@ std::string Layout::Section::getData(std::string id)
 {
     if (this->_elementMap.find(id) == this->_elementMap.end())
         return "";
-    if (Layout::Text* special = dynamic_cast<Layout::Text*>(this->_elementMap.at(id).get())) {
-        return special->getContent();
-    }
-    return "";
+    return this->_elementMap.at(id)->getData();
 }
