@@ -13,47 +13,57 @@
     #include "IElement.hpp"
     #include "Section.hpp"
     #include "Component.hpp"
+    #include "IGraphic.hpp"
     #include <filesystem>
     #include <memory>
     #include <optional>
     #include <unordered_map>
-    #include <vector>
+    #include <utility>
+#include <vector>
+    #include <set>
 
 namespace Layout {
 
 class Layout {
     std::unordered_map<std::string, std::unique_ptr<Section>> _sections;
-    // std::vector<Event> _events; // TODO: uncomment this
+    std::vector<Event> _events;
+    std::set<Event::Key> _heldKeys;
     std::optional<Section*> _selected;
-    // std::unordered_map<std::string, fonction> _shortcuts; // TODO: shortcuts
-    LibName _graphicalLib = LibName::SFML;
+    std::unordered_map<Event::Key, std::string> _shortcuts;
+    LibName _graphicalLibName = LibName::SFML;
+    std::unique_ptr<IGraphic> _graphicalLib;
     int _width;
     int _height;
     // TODO: dynamic lib
 
+    void openSection(std::string target);
+
     public:
-        Layout() = default;
-        Layout(LibName name) : _graphicalLib(name) {}
+        Layout();
+        Layout(LibName name);
 
         void save(std::filesystem::path fp);
         void load(std::filesystem::path fp);
 
-        void handleEvent(); // TODO: add event struct as param
+        bool handleEvents();
+        bool handleEvent(Event& event);
         void update();
+        void close();
         void draw();
 
         std::vector<std::string> getData(std::string secId, std::vector<std::string> elemsId);
+        bool isOpen() { return this->_graphicalLib->isOpen(); }
 
-        void addElem(IElement element, std::string elemId, std::string secId);
+        void addElem(std::unique_ptr<IElement> element, std::string elemId, std::string secId);
         void popElem(std::string elemId, std::string secId);
 
         class LayoutException : public std::exception {
             protected:
                 std::string _msg;
             public:
-                LayoutException(std::string msg) : _msg(msg) {}
+                LayoutException(std::string msg) : _msg(std::move(std::move(msg))) {}
 
-                virtual const char* what() const noexcept { return this->_msg.c_str(); }
+                [[nodiscard]] const char* what() const noexcept override { return this->_msg.c_str(); }
         };
 
         class InvalidConfigException : public LayoutException {
@@ -63,6 +73,6 @@ class Layout {
 
 };
 
-}
+} // namespace Layout
 
 #endif /* LAYOUT_HPP_ */

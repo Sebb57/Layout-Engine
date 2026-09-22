@@ -10,16 +10,19 @@
 #define RECTANGLE_HPP_
 
 #include "AElement.hpp"
+#include "Options.hpp"
+#include <memory>
 
 namespace Layout {
 
 class Rectangle : public AElement {
     public:
-        Rectangle(Color fillColor, Color borderColor) : AElement(fillColor, borderColor) {}
+        Rectangle(Transform transform, Options options);
         ~Rectangle() = default;
 
+        bool handleEvent(Event event) override { (void) event; return false; }
         void update(float deltaTime) override;
-        void draw() override;
+        void draw(IGraphic& graphicalLib) override;
 };
 
 }

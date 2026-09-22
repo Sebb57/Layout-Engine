@@ -26,11 +26,27 @@ endif()
 
 
 add_library(Layout SHARED
-    src/layout/load.cpp
-    src/Section/addElement.cpp
-    src/Element/Text.cpp
     src/Element/Image.cpp
     src/Element/Rectangle.cpp
+    src/Element/Text.cpp
+
+	src/layout/addElement.cpp
+    src/layout/close.cpp
+    src/layout/draw.cpp
+    src/layout/getData.cpp
+    src/layout/handleEvent.cpp
+    src/layout/layout.cpp
+    src/layout/load.cpp
+    src/layout/openSection.cpp
+	src/layout/popElement.cpp
+    src/layout/update.cpp
+
+    src/Section/addElement.cpp
+    src/Section/draw.cpp
+    src/Section/getData.cpp
+    src/Section/handleEvent.cpp
+    src/Section/popElement.cpp
+
     src/SFML.cpp
 )
 

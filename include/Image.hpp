@@ -10,6 +10,7 @@
 #define IMAGE_HPP_
 
 #include "AElement.hpp"
+#include "Options.hpp"
 #include <filesystem>
 #include <string>
 
@@ -19,11 +20,12 @@ class Image : public AElement {
     std::filesystem::path _path;
 
     public:
-        Image(Color fillColor, Color borderColor, std::string path) : AElement(fillColor, borderColor), _path(path) {}
+        Image(Transform transform, std::string path, Options options);
         ~Image() = default;
 
+        bool handleEvent(Event event) override { (void) event; return false; }
         void update(float deltaTime) override;
-        void draw() override;
+        void draw(IGraphic& graphicalLib) override;
 };
 
 }

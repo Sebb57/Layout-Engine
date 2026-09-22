@@ -7,26 +7,28 @@
 **/
 
 #ifndef TEXT_HPP_
-#define TEXT_HPP_
+    #define TEXT_HPP_
 
-#include "AElement.hpp"
-#include <string>
+    #include "AElement.hpp"
+    #include "Options.hpp"
+    #include <string>
 
 namespace Layout {
 
 class Text : public AElement {
     std::string _content;
-    Color _textColor;
 
     public:
-        Text(Color fillColor, Color borderColor, Color textColor, std::string content) : AElement(fillColor, borderColor), _content(content), _textColor(textColor) {}
+        Text(std::string content, Transform transform, Options options);
         ~Text() = default;
 
+        bool handleEvent(Event event) override { (void) event; return false; }
         void update(float deltaTime) override;
-        void draw() override;
+        void draw(IGraphic& graphicalLib) override;
+
+        std::string getContent() { return this->_content; }
 };
 
 }
 
 #endif /* TEXT_HPP_ */
-

@@ -9,32 +9,43 @@
 #ifndef SECTION_HPP_
 #define SECTION_HPP_
 
-#include "IElement.hpp"
+#include "AElement.hpp"
 #include "constants.hpp"
+#include "IElement.hpp"
+#include "Options.hpp"
+#include <memory>
 #include <string>
 #include <unordered_map>
-#include <memory>
+#include <utility>
+#include <vector>
 
 namespace Layout {
 
-class Section {
+class Section : public AElement {
     std::unordered_map<std::string, std::unique_ptr<IElement>> _elementMap;
+    std::vector<std::pair<int, std::string>> _elementSorted;
     std::string _id;
     bool _hidden;
 
     public:
-        Section(std::string id, bool hidden) : _id(id), _hidden(hidden) {}
+        Section(Transform transform, std::string id, bool hidden, Options options) : AElement(transform, options), _id(std::move(std::move(id))), _hidden(hidden) {}
+        ~Section() override = default;
 
-        Transform transform;
-
+        std::unordered_map<std::string, std::unique_ptr<IElement>>& getElementsMap() { return this->_elementMap; }
+        std::vector<std::pair<int, std::string>>& getElementsSorted() { return this->_elementSorted; }
         std::string getData(std::string id);
-        //bool draw(GraphicalHook);
         bool addElement(std::string name, std::unique_ptr<IElement> element);
-        
+        void popElement(std::string name);
+        bool isMouseInside(std::pair<int, int> mousePos, std::pair<unsigned, unsigned> windowSize);
+
         void open() { if (this->_id != constants::mainWindowName) this->_hidden = !this->_hidden; }
+        bool handleEvent(Event event) override;
+        void update(float deltaTime) override;
+        void draw(IGraphic& graphicalLib) override;
+
 };
 
-}
+} // namespace Layout
 
 #endif /* SECTION_HPP_ */
 

@@ -1,5 +1,5 @@
+#include <exception>
 #include <iostream>
-#include <libconfig.h++>
 #include "Layout.hpp"
 
 int main()
@@ -8,9 +8,23 @@ int main()
 
     try {
         layout.load("example.layout");
-        std::cout << "Layout Engine" << std::endl;
+
+        while (true) {
+            layout.handleEvents();
+            if (!layout.isOpen())
+                break;
+
+            layout.update();
+
+            // if (event.type == Layout::Event::Type::KeyPressed && event.key == Layout::Event::Key::T) {
+            //     std::vector<std::string> data = layout.getData("main", {"helloWorld"});
+            //     if (!data.empty())
+            //         std::cout << data.front() << std::endl;
+            // }
+            layout.draw();
+        }
     } catch (const std::exception& e) {
-        std::cerr << "std::exception: " << e.what() << std::endl;
+        std::cerr << "std::exception: " << e.what() << '\n';
         return -1;
     }
     return 0;
