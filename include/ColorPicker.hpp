@@ -16,27 +16,79 @@
 namespace Layout {
 
 class ColorPicker : public AElement {
-    // Slider<float> _brightness;
-    // Slider<float> _alpha;
-    // InputBox r;
-    // InputBox g;
-    // InputBox b;
-    std::pair<unsigned, unsigned> _windowSize;
+    Slider<float> _darkness;
+    Slider<float> _alpha;
+    InputBox _r;
+    // InputBox _g;
+    // InputBox _b;
 
     public:
-        ColorPicker(Transform transform, Options options) : AElement(transform, options) {} //TODO: calculate the transform of each slider and InputBox based on the ColorPicker transform
+        ColorPicker(Transform transform, Options options) : AElement(transform, options),
+            _darkness(
+                0.0F, 0.0F, 100.0F, 0.1F,
+                Transform(
+                    AnchorX::MID,
+                    AnchorY::TOP,
+                    Rect(transform.Pos.x, transform.Pos.y + transform.Size.y, transform.Pos.offsetX, transform.Pos.offsetY),
+                    Rect(transform.Size.x * 0.90F, transform.Size.y / 10.0F, transform.Size.offsetX, transform.Size.offsetY)
+                ),
+                options
+            ),
+            _alpha(
+                255.0F, 0.0F, 255.0F, 0.1F,
+                Transform(
+                    AnchorX::MID,
+                    AnchorY::TOP,
+                    Rect(transform.Pos.x, transform.Pos.y + (transform.Size.y / 0.75F), transform.Pos.offsetX, transform.Pos.offsetY),
+                    Rect(transform.Size.x * 0.90F, transform.Size.y / 10.0F, transform.Size.offsetX, transform.Size.offsetY)
+                ),
+                options
+            ),
+            _r(
+                "RRR.R",
+                Transform(
+                    AnchorX::MID,
+                    AnchorY::TOP,
+                    Rect(transform.Pos.x, transform.Pos.y + (transform.Size.y / 1.75F), transform.Pos.offsetX, transform.Pos.offsetY),
+                    Rect(transform.Size.x * 0.23F, transform.Size.y / 4.0F, transform.Size.offsetX, transform.Size.offsetY)
+                ),
+                options
+            )
+        {}
+
         ~ColorPicker() override = default;
 
-        bool handleEvent(Event event) override { (void) event; return false; }
-        void update(float deltaTime) override {(void) deltaTime;}
-        void draw(IGraphic& graphicalLib) final
+        bool handleEvent(Event event) override
         {
-            this->_windowSize = graphicalLib.getWindowSize();
-
-            graphicalLib.drawRectangle(this->transform, this->_options);
+            if (this->_darkness.handleEvent(event))
+                return true;
+            if (this->_alpha.handleEvent(event))
+                return true;
+            if (this->_r.handleEvent(event))
+                return true;
+            return false;
         }
 
-        [[nodiscard]] std::string getData() const noexcept final { return ""; }
+        void update(float deltaTime) override
+        {
+            this->_darkness.update(deltaTime);
+            this->_alpha.update(deltaTime);
+            this->_r.update(deltaTime);
+        }
+
+        void draw(IGraphic& graphicalLib) final
+        {
+            graphicalLib.drawRectangle(this->transform, this->_options);
+
+            this->_darkness.draw(graphicalLib);
+            this->_alpha.draw(graphicalLib);
+            this->_r.draw(graphicalLib);
+        }
+
+        [[nodiscard]] std::string getData() const noexcept final
+        {
+            return "";
+        }
 };
 
 }
