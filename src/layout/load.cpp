@@ -15,6 +15,7 @@
 #include "Rectangle.hpp"
 #include "Slider.hpp"
 #include "Text.hpp"
+#include "ColorPicker.hpp"
 #include <filesystem>
 #include <iostream>
 #include <libconfig.h++>
@@ -246,6 +247,29 @@ std::unique_ptr<Layout::IElement> parseInputBox(const libconfig::Setting& settin
     return std::make_unique<Layout::InputBox>(value, transform, options);
 }
 
+std::unique_ptr<Layout::IElement> parseColorPicker(const libconfig::Setting& setting, Layout::Transform transform)
+{
+    if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("ZIndex"))
+        throw Layout::Layout::InvalidConfigException();
+
+    const libconfig::Setting& fillColorSetting = setting.lookup("fillColor");
+    const libconfig::Setting& borderColorSetting = setting.lookup("borderColor");
+    unsigned outlineThickness;
+    int ZIndex = 0;
+    if (!fillColorSetting.isGroup() || !borderColorSetting.isGroup() || !setting.lookupValue("ZIndex", ZIndex) || !setting.lookupValue("outlineThickness", outlineThickness))
+        throw Layout::Layout::InvalidConfigException();
+
+    Layout::Color borderColor = parseColor(borderColorSetting);
+    Layout::Color fillColor = parseColor(fillColorSetting);
+    Layout::Options options;
+    options.primaryColor = fillColor;
+    options.secondaryColor = borderColor;
+    options.outlineThickness = outlineThickness;
+    options.zIndex = ZIndex;
+
+    return std::make_unique<Layout::ColorPicker>(transform, options);
+}
+
 Layout::Transform parseTransform(const libconfig::Setting& setting, bool absolute)
 {
     if (!setting.exists("pos") || !setting.exists("size"))
@@ -292,6 +316,10 @@ std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting
     if (type == "inputBox") {
         transform = parseTransform(setting, false);
         return parseInputBox(setting, transform);
+    }
+    if (type == "colorPicker") {
+        transform = parseTransform(setting, false);
+        return parseColorPicker(setting, transform);
     }
     throw Layout::Layout::InvalidConfigException();
 }
