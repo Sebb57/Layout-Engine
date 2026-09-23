@@ -16,19 +16,13 @@
 namespace Layout {
 
 class ColorPicker : public AElement {
-    Transform _darknessTransform;
-    Transform _alphaTransform;
-    Transform _rTransform;
-    Transform _gTransform;
-    Transform _bTransform;
-
     Slider<float> _darkness;
     Slider<float> _alpha;
     InputBox _r;
     InputBox _g;
     InputBox _b;
 
-    void _updateTransforms() //TODO: update each transform based on the anchor point so that is match
+    void _updateTransforms()
     {
         switch (this->transform.AnchX) {
             case AnchorX::LEFT:
@@ -46,50 +40,60 @@ class ColorPicker : public AElement {
             case AnchorY::BOTTOM:
                 break;
         }
-        this->_darkness.transform = this->_darknessTransform;
-        this->_alpha.transform = this->_alphaTransform;
-        this->_r.transform = this->_rTransform;
-        this->_g.transform = this->_gTransform;
-        this->_b.transform = this->_bTransform;
     }
 
     public:
         ColorPicker(Transform transform, Options options) : AElement(transform, options),
-            _darknessTransform(
-                transform.AnchX,
-                transform.AnchY,
-                Rect(this->transform.Pos.x, this->transform.Pos.y + this->transform.Size.y, this->transform.Pos.offsetX, this->transform.Pos.offsetY),
-                Rect(this->transform.Size.x * 0.90F, this->transform.Size.y / 10.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
+            _darkness(
+                0.0F, 0.0F, 100.0F, 0.1F,
+                Transform(
+                    transform.AnchX,
+                    transform.AnchY,
+                    Rect(this->transform.Pos.x, this->transform.Pos.y + this->transform.Size.y, this->transform.Pos.offsetX, this->transform.Pos.offsetY),
+                    Rect(this->transform.Size.x * 0.90F, this->transform.Size.y / 10.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
+                ),
+                options
             ),
-            _alphaTransform(
-                transform.AnchX,
-                transform.AnchY,
-                Rect(this->transform.Pos.x, this->transform.Pos.y + (this->transform.Size.y / 0.75F), this->transform.Pos.offsetX, this->transform.Pos.offsetY),
-                Rect(this->transform.Size.x * 0.90F, this->transform.Size.y / 10.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
+            _alpha(
+                255.0F, 0.0F, 255.0F, 0.1F,
+                Transform(
+                    transform.AnchX,
+                    transform.AnchY,
+                    Rect(this->transform.Pos.x, this->transform.Pos.y + (this->transform.Size.y / 0.75F), this->transform.Pos.offsetX, this->transform.Pos.offsetY),
+                    Rect(this->transform.Size.x * 0.90F, this->transform.Size.y / 10.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
+                ),
+                options
             ),
-            _rTransform(
-                transform.AnchX,
-                transform.AnchY,
-                Rect(this->transform.Pos.x - (this->transform.Size.x * 0.135F), this->transform.Pos.y + (this->transform.Size.y / 1.75F), this->transform.Pos.offsetX - (this->transform.Size.offsetX * 0.135F), this->transform.Pos.offsetY),
-                Rect(this->transform.Size.x * 0.23F, this->transform.Size.y / 4.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
+            _r(
+                "RRR.R",
+                Transform(
+                    transform.AnchX,
+                    transform.AnchY,
+                    Rect(this->transform.Pos.x - (this->transform.Size.x * 0.135F), this->transform.Pos.y + (this->transform.Size.y / 1.75F), this->transform.Pos.offsetX - (this->transform.Size.offsetX * 0.135F), this->transform.Pos.offsetY),
+                    Rect(this->transform.Size.x * 0.23F, this->transform.Size.y / 4.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
+                ),
+                options
             ),
-            _gTransform(
-                transform.AnchX,
-                transform.AnchY,
-                Rect(this->transform.Pos.x + (this->transform.Size.x * 0.115F), this->transform.Pos.y + (this->transform.Size.y / 1.75F), this->transform.Pos.offsetX + (this->transform.Size.offsetX * 0.115F), this->transform.Pos.offsetY),
-                Rect(this->transform.Size.x * 0.23F, this->transform.Size.y / 4.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
+            _g(
+                "GGG.G",
+                Transform(
+                    transform.AnchX,
+                    transform.AnchY,
+                    Rect(this->transform.Pos.x + (this->transform.Size.x * 0.115F), this->transform.Pos.y + (this->transform.Size.y / 1.75F), this->transform.Pos.offsetX + (this->transform.Size.offsetX * 0.115F), this->transform.Pos.offsetY),
+                    Rect(this->transform.Size.x * 0.23F, this->transform.Size.y / 4.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
+                ),
+                options
             ),
-            _bTransform(
-                transform.AnchX,
-                transform.AnchY,
-                Rect(this->transform.Pos.x + (this->transform.Size.x * 0.365F), this->transform.Pos.y + (this->transform.Size.y / 1.75F), this->transform.Pos.offsetX + (this->transform.Size.offsetX * 0.365F), this->transform.Pos.offsetY),
-                Rect(this->transform.Size.x * 0.23F, this->transform.Size.y / 4.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
-            ),
-            _darkness(0.0F, 0.0F, 100.0F, 0.1F, Transform(), options),
-            _alpha(255.0F, 0.0F, 255.0F, 0.1F, Transform(), options),
-            _r("RRR.R", Transform(), options),
-            _g("GGG.G", Transform(), options),
-            _b("BBB.B", Transform(), options)
+            _b(
+                "BBB.B",
+                Transform(
+                    transform.AnchX,
+                    transform.AnchY,
+                    Rect(this->transform.Pos.x + (this->transform.Size.x * 0.365F), this->transform.Pos.y + (this->transform.Size.y / 1.75F), this->transform.Pos.offsetX + (this->transform.Size.offsetX * 0.365F), this->transform.Pos.offsetY),
+                    Rect(this->transform.Size.x * 0.23F, this->transform.Size.y / 4.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
+                ),
+                options
+            )
         {}
 
         ~ColorPicker() override = default;
