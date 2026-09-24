@@ -19,6 +19,7 @@ set(COMPILE_FLAGS
     -Ofast
     -flto=auto
     -march=native
+    -ggdb3
 )
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     list(APPEND COMPILE_FLAGS -ggdb3)

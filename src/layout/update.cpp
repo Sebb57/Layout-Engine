@@ -11,5 +11,6 @@
 
 void Layout::Layout::update()
 {
-    
+    for (auto & [key, section]: this->_sections)
+        section->update(0); // TODO: deltaTime
 }

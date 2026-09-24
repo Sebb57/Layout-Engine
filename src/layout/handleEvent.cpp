@@ -40,7 +40,7 @@ bool Layout::Layout::handleEvent(Event& event)
         || event.type == Event::Type::MouseMoved || event.type == Event::Type::MouseWheelScrolled)
         for (auto & [key, section]: this->_sections)
             if (section->handleEvent(event))
-                    return true;
+                return true;
 
     if (event.type == Event::Type::KeyPressed) {
         if (this->_heldKeys.contains(event.key)) {
