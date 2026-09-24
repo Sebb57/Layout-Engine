@@ -25,7 +25,9 @@ class InputBox : public AElement {
     Transform _textTransform;
     Options _textOptions;
     std::pair<unsigned, unsigned> _windowSize;
+    Color _secondaryColor;
     std::string _value;
+    bool _selected;
 
     void _updateTransforms()
     {
@@ -65,24 +67,12 @@ class InputBox : public AElement {
     }
 
     public:
-        InputBox(std::string value, Transform transform, Options options) : AElement(transform, options), _textTransform(transform), _value(value) {}
+        InputBox(std::string value, Transform transform, Options options) : AElement(transform, options), _textTransform(transform), _secondaryColor(options.secondaryColor), _value(value) {}
         ~InputBox() = default;
 
-        bool handleEvent(Event event) override { (void) event; return false; }
+        bool handleEvent(Event event) override;
         void update(float deltaTime) override { (void) deltaTime; }
-        void draw(IGraphic& graphicalLib) override
-        {
-            this->_windowSize = graphicalLib.getWindowSize();
-            this->_updateTransforms();
-
-            if (this->_value.empty())
-                this->_textOptions.primaryColor = Color(180, 180, 180);
-            else
-                this->_textOptions.primaryColor = Color(255, 255, 255);
-
-            graphicalLib.drawRectangle(this->transform, this->_options);
-            graphicalLib.drawText(this->_textTransform, !this->_value.empty() ? this->_value : "Enter text...", this->_textOptions);
-        }
+        void draw(IGraphic& graphicalLib) override;
         [[nodiscard]] std::string getData() const noexcept final { return this->_value; }
 };
 

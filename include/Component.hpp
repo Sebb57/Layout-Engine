@@ -58,6 +58,7 @@ struct Event {
         Unknown,
         Escape,
         Space,
+        Backspace,
         Shift,
         Control,
         Alt,
@@ -104,7 +105,7 @@ struct Event {
 
     Type type = Type::None;
     Key key = Key::Unknown;
-    char keyChar = '\0';
+    unsigned keyChar = '\0';
     MouseButton mouseButton = MouseButton::None;
     double wheelDelta = 0.0;
     int mouseX = 0;

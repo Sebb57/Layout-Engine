@@ -36,18 +36,11 @@ bool Layout::Layout::handleEvent(Event& event)
     event = this->_events.back();
     this->_events.pop_back();
 
-    switch (event.type) {
-        case Event::Type::MouseButtonPressed:
-        case Event::Type::MouseButtonReleased:
-        case Event::Type::MouseMoved:
-        case Event::Type::MouseWheelScrolled:
-            for (auto & [key, section]: this->_sections)
-                if (section->handleEvent(event))
+    if (event.type == Event::Type::MouseButtonPressed || event.type == Event::Type::MouseButtonReleased
+        || event.type == Event::Type::MouseMoved || event.type == Event::Type::MouseWheelScrolled)
+        for (auto & [key, section]: this->_sections)
+            if (section->handleEvent(event))
                     return true;
-            break;
-        default:
-            break;
-    }
 
     if (event.type == Event::Type::KeyPressed) {
         if (this->_heldKeys.contains(event.key)) {
@@ -66,6 +59,12 @@ bool Layout::Layout::handleEvent(Event& event)
     else if (event.type == Event::Type::KeyReleased) {
         this->_heldKeys.erase(event.key);
     }
+
+    if (event.type != Event::Type::MouseButtonPressed && event.type != Event::Type::MouseButtonReleased
+        && event.type != Event::Type::MouseMoved && event.type != Event::Type::MouseWheelScrolled)
+        for (auto & [key, section]: this->_sections)
+            if (section->handleEvent(event))
+                return true;
 
     return false;
 }

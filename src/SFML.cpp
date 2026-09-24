@@ -103,8 +103,7 @@ std::queue<Layout::Event> Layout::SFML::listen() const
             events.push(event);
             continue;
         }
-        if (sfmlEvent.type == sf::Event::KeyPressed) {
-            event.type = Event::Type::KeyPressed;
+        if (sfmlEvent.type == sf::Event::KeyPressed || sfmlEvent.type == sf::Event::KeyReleased || sfmlEvent.type == sf::Event::TextEntered) {
             switch (sfmlEvent.key.code) {
                 case sf::Keyboard::Left:
                     event.key = Event::Key::Left;
@@ -126,6 +125,12 @@ std::queue<Layout::Event> Layout::SFML::listen() const
                     break;
                 case sf::Keyboard::Space:
                     event.key = Event::Key::Space;
+                    break;
+                case sf::Keyboard::Backspace:
+                    event.key = Event::Key::Backspace;
+                    break;
+                case sf::Keyboard::Delete:
+                    event.key = Event::Key::Delete;
                     break;
                 case sf::Keyboard::A:
                     event.key = Event::Key::A;
@@ -208,115 +213,20 @@ std::queue<Layout::Event> Layout::SFML::listen() const
                 default:
                     break;
             }
-            event.keyChar = static_cast<char>(sfmlEvent.key.code);
+        }
+        if (sfmlEvent.type == sf::Event::KeyPressed) {
+            event.type = Event::Type::KeyPressed;
+            event.keyChar = static_cast<unsigned>(sfmlEvent.text.unicode);
             events.push(event);
         }
         if (sfmlEvent.type == sf::Event::KeyReleased) {
             event.type = Event::Type::KeyReleased;
-            switch (sfmlEvent.key.code) {
-                case sf::Keyboard::Left:
-                    event.key = Event::Key::Left;
-                    break;
-                case sf::Keyboard::Right:
-                    event.key = Event::Key::Right;
-                    break;
-                case sf::Keyboard::Down:
-                    event.key = Event::Key::Down;
-                    break;
-                case sf::Keyboard::Up:
-                    event.key = Event::Key::Up;
-                    break;
-                case sf::Keyboard::Enter:
-                    event.key = Event::Key::Enter;
-                    break;
-                case sf::Keyboard::Escape:
-                    event.key = Event::Key::Escape;
-                    break;
-                case sf::Keyboard::Space:
-                    event.key = Event::Key::Space;
-                    break;
-                case sf::Keyboard::A:
-                    event.key = Event::Key::A;
-                    break;
-                case sf::Keyboard::B:
-                    event.key = Event::Key::B;
-                    break;
-                case sf::Keyboard::C:
-                    event.key = Event::Key::C;
-                    break;
-                case sf::Keyboard::D:
-                    event.key = Event::Key::D;
-                    break;
-                case sf::Keyboard::E:
-                    event.key = Event::Key::E;
-                    break;
-                case sf::Keyboard::F:
-                    event.key = Event::Key::F;
-                    break;
-                case sf::Keyboard::G:
-                    event.key = Event::Key::G;
-                    break;
-                case sf::Keyboard::H:
-                    event.key = Event::Key::H;
-                    break;
-                case sf::Keyboard::I:
-                    event.key = Event::Key::I;
-                    break;
-                case sf::Keyboard::J:
-                    event.key = Event::Key::J;
-                    break;
-                case sf::Keyboard::K:
-                    event.key = Event::Key::K;
-                    break;
-                case sf::Keyboard::L:
-                    event.key = Event::Key::L;
-                    break;
-                case sf::Keyboard::M:
-                    event.key = Event::Key::M;
-                    break;
-                case sf::Keyboard::N:
-                    event.key = Event::Key::N;
-                    break;
-                case sf::Keyboard::O:
-                    event.key = Event::Key::O;
-                    break;
-                case sf::Keyboard::P:
-                    event.key = Event::Key::P;
-                    break;
-                case sf::Keyboard::Q:
-                    event.key = Event::Key::Q;
-                    break;
-                case sf::Keyboard::R:
-                    event.key = Event::Key::R;
-                    break;
-                case sf::Keyboard::S:
-                    event.key = Event::Key::S;
-                    break;
-                case sf::Keyboard::T:
-                    event.key = Event::Key::T;
-                    break;
-                case sf::Keyboard::U:
-                    event.key = Event::Key::U;
-                    break;
-                case sf::Keyboard::V:
-                    event.key = Event::Key::V;
-                    break;
-                case sf::Keyboard::W:
-                    event.key = Event::Key::W;
-                    break;
-                case sf::Keyboard::X:
-                    event.key = Event::Key::X;
-                    break;
-                case sf::Keyboard::Y:
-                    event.key = Event::Key::Y;
-                    break;
-                case sf::Keyboard::Z:
-                    event.key = Event::Key::Z;
-                    break;
-                default:
-                    break;
-            }
-            event.keyChar = static_cast<char>(sfmlEvent.key.code);
+            event.keyChar = static_cast<unsigned>(sfmlEvent.text.unicode);
+            events.push(event);
+        }
+        if (sfmlEvent.type == sf::Event::TextEntered) {
+            event.type = Event::Type::TextEntered;
+            event.keyChar = static_cast<char>(sfmlEvent.text.unicode);
             events.push(event);
         }
         if (sfmlEvent.type == sf::Event::MouseButtonPressed) {
