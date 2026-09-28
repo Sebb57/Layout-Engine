@@ -24,22 +24,56 @@ class ColorPicker : public AElement {
 
     void _updateTransforms()
     {
-        switch (this->transform.AnchX) {
+        const Transform& p = this->transform;
+        float ax = 0.0F;
+        float ay = 0.0F;
+
+        switch (p.AnchX) {
             case AnchorX::LEFT:
+                ax = 1.0F;
                 break;
-            case AnchorX::MID: 
+            case AnchorX::MID:
+                ax = 0.0F;
                 break;
             case AnchorX::RIGHT:
+                ax = -1.0F;
                 break;
         }
-        switch (this->transform.AnchY) {
+        switch (p.AnchY) {
             case AnchorY::TOP:
+                ay = 1.0F;
                 break;
             case AnchorY::MID:
+                ay = 0.0F;
                 break;
             case AnchorY::BOTTOM:
+                ay = -1.0F;
                 break;
         }
+
+        auto place = [&](AElement& child, float dx, float dy, float sx, float sy) {
+            const float fx = dx + ax * (1.0F - sx) / 2.0F;
+            const float fy = dy + ay * (1.0F - sy) / 2.0F;
+
+            child.transform.AnchX = p.AnchX;
+            child.transform.AnchY = p.AnchY;
+
+            child.transform.Pos.x = p.Pos.x + p.Size.x * fx;
+            child.transform.Pos.y = p.Pos.y + p.Size.y * fy;
+            child.transform.Pos.offsetX = p.Pos.offsetX + p.Size.offsetX * fx;
+            child.transform.Pos.offsetY = p.Pos.offsetY + p.Size.offsetY * fy;
+
+            child.transform.Size.x = p.Size.x * sx;
+            child.transform.Size.y = p.Size.y * sy;
+            child.transform.Size.offsetX = p.Size.offsetX * sx;
+            child.transform.Size.offsetY = p.Size.offsetY * sy;
+        };
+
+        place(_darkness, 0.0F, 0.100F, 0.90F, 0.10F);
+        place(_alpha, 0.0F, 0.375F, 0.90F, 0.10F);
+        place(_r, -0.135F, -0.250F, 0.23F, 0.25F);
+        place(_g, 0.115F, -0.250F, 0.23F, 0.25F);
+        place(_b, 0.365F, -0.250F, 0.23F, 0.25F);
     }
 
     public:
@@ -94,7 +128,9 @@ class ColorPicker : public AElement {
                 ),
                 options
             )
-        {}
+        {
+            this->_updateTransforms();
+        }
 
         ~ColorPicker() override = default;
 
