@@ -49,7 +49,7 @@ class ColorPicker : public AElement {
                 Transform(
                     transform.AnchX,
                     transform.AnchY,
-                    Rect(this->transform.Pos.x, this->transform.Pos.y + this->transform.Size.y, this->transform.Pos.offsetX, this->transform.Pos.offsetY),
+                    Rect(this->transform.Pos.x, this->transform.Pos.y + ((this->transform.Size.y / 2) * 0.20), this->transform.Pos.offsetX, this->transform.Pos.offsetY),
                     Rect(this->transform.Size.x * 0.90F, this->transform.Size.y / 10.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
                 ),
                 options
@@ -59,37 +59,37 @@ class ColorPicker : public AElement {
                 Transform(
                     transform.AnchX,
                     transform.AnchY,
-                    Rect(this->transform.Pos.x, this->transform.Pos.y + (this->transform.Size.y / 0.75F), this->transform.Pos.offsetX, this->transform.Pos.offsetY),
+                    Rect(this->transform.Pos.x, this->transform.Pos.y + ((this->transform.Size.y / 2) * 0.75), this->transform.Pos.offsetX, this->transform.Pos.offsetY),
                     Rect(this->transform.Size.x * 0.90F, this->transform.Size.y / 10.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
                 ),
                 options
             ),
             _r(
-                "RRR.R",
+                "000.0",
                 Transform(
                     transform.AnchX,
                     transform.AnchY,
-                    Rect(this->transform.Pos.x - (this->transform.Size.x * 0.135F), this->transform.Pos.y + (this->transform.Size.y / 1.75F), this->transform.Pos.offsetX - (this->transform.Size.offsetX * 0.135F), this->transform.Pos.offsetY),
+                    Rect(this->transform.Pos.x - (this->transform.Size.x * 0.135F), this->transform.Pos.y - (this->transform.Size.y * 0.25F), this->transform.Pos.offsetX, this->transform.Pos.offsetY),
                     Rect(this->transform.Size.x * 0.23F, this->transform.Size.y / 4.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
                 ),
                 options
             ),
             _g(
-                "GGG.G",
+                "000.0",
                 Transform(
                     transform.AnchX,
                     transform.AnchY,
-                    Rect(this->transform.Pos.x + (this->transform.Size.x * 0.115F), this->transform.Pos.y + (this->transform.Size.y / 1.75F), this->transform.Pos.offsetX + (this->transform.Size.offsetX * 0.115F), this->transform.Pos.offsetY),
+                    Rect(this->transform.Pos.x + (this->transform.Size.x * 0.115F), this->transform.Pos.y - (this->transform.Size.y * 0.25F), this->transform.Pos.offsetX, this->transform.Pos.offsetY),
                     Rect(this->transform.Size.x * 0.23F, this->transform.Size.y / 4.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
                 ),
                 options
             ),
             _b(
-                "BBB.B",
+                "000.0",
                 Transform(
                     transform.AnchX,
                     transform.AnchY,
-                    Rect(this->transform.Pos.x + (this->transform.Size.x * 0.365F), this->transform.Pos.y + (this->transform.Size.y / 1.75F), this->transform.Pos.offsetX + (this->transform.Size.offsetX * 0.365F), this->transform.Pos.offsetY),
+                    Rect(this->transform.Pos.x + (this->transform.Size.x * 0.365F), this->transform.Pos.y - (this->transform.Size.y * 0.25F), this->transform.Pos.offsetX, this->transform.Pos.offsetY),
                     Rect(this->transform.Size.x * 0.23F, this->transform.Size.y / 4.0F, this->transform.Size.offsetX, this->transform.Size.offsetY)
                 ),
                 options
