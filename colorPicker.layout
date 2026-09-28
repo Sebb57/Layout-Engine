@@ -1,6 +1,6 @@
 layout = {
-    width = 500;
-    height = 300;
+    width = 720;
+    height = 560;
 
     sections = {
         main = {
@@ -10,12 +10,12 @@ layout = {
             borderColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
 
             pos = { x = 0.0; y = 0.0; offsetX = 0; offsetY = 0; };
-            size = { x = 30.0; y = 30.0; };
+            size = { x = 30.0; y = 30.0; offsetX = 0; offsetY = 0; };
             elements = {
                 colorPickerTest = {
                     type = "colorPicker";
                     anchX = "middle";
-                    anchY = "middle";
+                    anchY = "bottom";
                     pos = { x = 0.0; y = 0.0; offsetX = 0; offsetY = 0; };
                     size = { x = 0.65; y = 0.50; offsetX = 0; offsetY = 0; };
                     fillColor = { r = 80.0; g = 80.0; b = 80.0; a = 255.0; };
