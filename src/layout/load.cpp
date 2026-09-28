@@ -73,20 +73,15 @@ Layout::Rect parseRect(const libconfig::Setting& setting)
     return Layout::Rect(x, y, offsetX, offsetY);
 }
 
-Layout::Rect parseRectSize(const libconfig::Setting& setting, bool offsets)
+Layout::Rect parseRectSize(const libconfig::Setting& setting)
 {
-    double x = 0;
-    double y = 0;
-    double offsetX = 0;
-    double offsetY = 0;
+    float x = 0;
+    float y = 0;
+    int offsetX = 0;
+    int offsetY = 0;
 
-    if (offsets) {
-        if (!setting.lookupValue("x", offsetX) || !setting.lookupValue("y", offsetY))
-            throw Layout::Layout::InvalidConfigException();
-    } else {
-        if (!setting.lookupValue("x", x) || !setting.lookupValue("y", y))
-            throw Layout::Layout::InvalidConfigException();
-    }
+    if (!setting.lookupValue("x", x) || !setting.lookupValue("y", y) || !setting.lookupValue("offsetX", offsetX) || !setting.lookupValue("offsetY", offsetY))
+        throw Layout::Layout::InvalidConfigException();
     return Layout::Rect(x, y, offsetX, offsetY);
 }
 
@@ -270,7 +265,7 @@ std::unique_ptr<Layout::IElement> parseColorPicker(const libconfig::Setting& set
     return std::make_unique<Layout::ColorPicker>(transform, options);
 }
 
-Layout::Transform parseTransform(const libconfig::Setting& setting, bool absolute)
+Layout::Transform parseTransform(const libconfig::Setting& setting)
 {
     if (!setting.exists("pos") || !setting.exists("size"))
         throw Layout::Layout::InvalidConfigException();
@@ -284,7 +279,7 @@ Layout::Transform parseTransform(const libconfig::Setting& setting, bool absolut
     newTransform.AnchX = resolveAnchorX(setting);
     newTransform.AnchY = resolveAnchorY(setting);
     newTransform.Pos = parseRect(pos);
-    newTransform.Size = parseRectSize(size, absolute);
+    newTransform.Size = parseRectSize(size);
 
     return newTransform;
 }
@@ -298,27 +293,27 @@ std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting
     Layout::Transform transform;
 
     if (type == "rectangle") {
-        transform = parseTransform(setting, false);
+        transform = parseTransform(setting);
         return parseRectangle(setting, transform);
     }
     if (type == "text") {
-        transform = parseTransform(setting, true);
+        transform = parseTransform(setting);
         return parseText(setting, transform);
     }
     if (type == "image") {
-        transform = parseTransform(setting, false);
+        transform = parseTransform(setting);
         return parseImage(setting, transform);
     }
     if (type == "slider") {
-        transform = parseTransform(setting, false);
+        transform = parseTransform(setting);
         return parseSlider(setting, transform);
     }
     if (type == "inputBox") {
-        transform = parseTransform(setting, false);
+        transform = parseTransform(setting);
         return parseInputBox(setting, transform);
     }
     if (type == "colorPicker") {
-        transform = parseTransform(setting, false);
+        transform = parseTransform(setting);
         return parseColorPicker(setting, transform);
     }
     throw Layout::Layout::InvalidConfigException();
@@ -333,7 +328,7 @@ std::unique_ptr<Layout::Section> parseSection(const libconfig::Setting& setting,
     Layout::Color borderColor = parseColor(borderColorSetting);
     Layout::Color fillColor = parseColor(fillColorSetting);
 
-    Layout::Transform transform = parseTransform(setting, true);
+    Layout::Transform transform = parseTransform(setting);
     Layout::Options options;
     options.primaryColor = fillColor;
     options.secondaryColor = borderColor;

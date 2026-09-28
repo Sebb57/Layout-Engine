@@ -2,7 +2,7 @@ layout = {
     width = 500;
     height = 300;
 
-    shortcuts = { section1 = "S"; }
+    shortcuts = { main = "A"; section1 = "S"; }
 
     sections = {
         main = {
@@ -12,7 +12,7 @@ layout = {
             borderColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
 
             pos = { x = 0.0; y = 0.0; offsetX = 0; offsetY = 0; };
-            size = { x = 15.0; y = 15.0; };
+            size = { x = 0.0; y = 1.0; offsetX = 45; offsetY = 0; };
             elements = {
             };
         };
@@ -23,7 +23,7 @@ layout = {
             borderColor = { r = 255.0; g = 255.0; b = 255.0; a = 255.0; };
 
             pos = { x = 0.0; y = 0.0; offsetX = 0; offsetY = 0; };
-            size = { x = 15.0; y = 15.0; };
+            size = { x = 0.0; y = 1.0; offsetX = 45; offsetY = 0; };
             elements = {
             };
         };
