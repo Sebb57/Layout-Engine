@@ -172,7 +172,7 @@ class ColorPicker : public AElement {
 
         [[nodiscard]] std::string getData() const noexcept final
         {
-            return "";
+            return std::format("{};{};{}", this->_r.getData(), this->_g.getData(), this->_b.getData());
         }
 };
 
