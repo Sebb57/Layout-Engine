@@ -68,6 +68,7 @@ struct Event {
         Up,
         Down,
         Delete,
+        Insert,
         A,
         B,
         C,

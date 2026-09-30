@@ -132,6 +132,9 @@ std::queue<Layout::Event> Layout::SFML::listen() const
                 case sf::Keyboard::Delete:
                     event.key = Event::Key::Delete;
                     break;
+                case sf::Keyboard::Insert:
+                    event.key = Event::Key::Insert;
+                    break;
                 case sf::Keyboard::A:
                     event.key = Event::Key::A;
                     break;

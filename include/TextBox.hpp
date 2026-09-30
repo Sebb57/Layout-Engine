@@ -36,6 +36,7 @@ class TextBox : public AElement {
     char _hiddenChar = '\0';
     bool _selected = false;
     bool _showCursor = false;
+    bool _inserting = false;
 
     void _updateTransforms();
 

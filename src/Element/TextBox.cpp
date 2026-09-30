@@ -80,12 +80,22 @@ bool Layout::TextBox::handleEvent(Event event)
         return false;
     }
     if (this->_selected && event.type == Event::Type::KeyPressed) {
-        if (event.key == Event::Key::Left)
-            if (this->_cursorOffset > 0)
-                this->_cursorOffset--;
-        if (event.key == Event::Key::Right)
-            if (this->_cursorOffset < this->_value.length())
-                this->_cursorOffset++;
+        switch (event.key) {
+            case Event::Key::Left:
+                if (this->_cursorOffset > 0)
+                    this->_cursorOffset--;
+                break;
+            case Event::Key::Right:
+                if (this->_cursorOffset < this->_value.length())
+                    this->_cursorOffset++;
+                break;
+            case Event::Key::Insert:
+                this->_inserting = !this->_inserting;
+                break;
+            default:
+                break;
+        }
+        return true;
     }
     if (this->_selected && event.type == Event::Type::TextEntered) {
         if (event.keyChar == '\b' || event.keyChar == 127) {
@@ -94,7 +104,14 @@ bool Layout::TextBox::handleEvent(Event event)
                 this->_cursorOffset--;
             }
         } else {
-            this->_value.insert(this->_value.begin() + this->_cursorOffset, event.keyChar);
+            if (!this->_inserting)
+                this->_value.insert(this->_value.begin() + this->_cursorOffset, event.keyChar);
+            else {
+                if (this->_cursorOffset < this->_value.length())
+                    this->_value[this->_cursorOffset] = event.keyChar;
+                else
+                    this->_value += event.keyChar;
+            }
             this->_cursorOffset++;
             this->_showCursor = false;
             this->_cursorChrono->reset();
