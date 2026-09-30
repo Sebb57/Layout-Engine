@@ -7,7 +7,7 @@ int main()
     Layout::Layout layout;
 
     try {
-        layout.load("example.layout");
+        layout.load("textBox.layout");
 
         while (true) {
             layout.handleEvents();

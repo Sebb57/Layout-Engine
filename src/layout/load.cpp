@@ -9,7 +9,7 @@
 #include "Component.hpp"
 #include "constants.hpp"
 #include "Image.hpp"
-#include "InputBox.hpp"
+#include "TextBox.hpp"
 #include "Layout.hpp"
 #include "Options.hpp"
 #include "Rectangle.hpp"
@@ -217,7 +217,7 @@ std::unique_ptr<Layout::IElement> parseSlider(const libconfig::Setting& setting,
     return std::make_unique<Layout::Slider<long double>>(std::stold(value), std::stold(min), std::stold(max), std::stold(step), transform, options);
 }
 
-std::unique_ptr<Layout::IElement> parseInputBox(const libconfig::Setting& setting, Layout::Transform transform)
+std::unique_ptr<Layout::IElement> parseTextBox(const libconfig::Setting& setting, Layout::Transform transform)
 {
     if (!setting.exists("fillColor") || !setting.exists("borderColor") || !setting.exists("ZIndex"))
         throw Layout::Layout::InvalidConfigException();
@@ -239,7 +239,7 @@ std::unique_ptr<Layout::IElement> parseInputBox(const libconfig::Setting& settin
     options.outlineThickness = outlineThickness;
     options.zIndex = ZIndex;
 
-    return std::make_unique<Layout::InputBox>(value, transform, options);
+    return std::make_unique<Layout::TextBox>(value, transform, options);
 }
 
 std::unique_ptr<Layout::IElement> parseColorPicker(const libconfig::Setting& setting, Layout::Transform transform)
@@ -308,9 +308,9 @@ std::unique_ptr<Layout::IElement> parseElement(const libconfig::Setting& setting
         transform = parseTransform(setting);
         return parseSlider(setting, transform);
     }
-    if (type == "inputBox") {
+    if (type == "textBox") {
         transform = parseTransform(setting);
-        return parseInputBox(setting, transform);
+        return parseTextBox(setting, transform);
     }
     if (type == "colorPicker") {
         transform = parseTransform(setting);

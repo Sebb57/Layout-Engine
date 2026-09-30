@@ -1,5 +1,5 @@
 /**
- * @file InputBox.hpp
+ * @file TextBox.hpp
  * @brief Input Box Class Header
  *
  * @author SkyReox
@@ -7,8 +7,8 @@
 **/
 
 #pragma once
-#ifndef INPUTBOX_HPP_
-    #define INPUTBOX_HPP_
+#ifndef TextBox_HPP_
+    #define TextBox_HPP_
 
     #include "AElement.hpp"
     #include "Chronometer.hpp"
@@ -23,7 +23,7 @@ inline constexpr unsigned CURSOR_SWAP = 1000;
 
 namespace Layout {
 
-class InputBox : public AElement {
+class TextBox : public AElement {
     std::unique_ptr<Chronometer> _cursorChrono;
     Transform _textTransform;
     Options _textOptions;
@@ -40,8 +40,8 @@ class InputBox : public AElement {
     void _updateTransforms();
 
     public:
-        InputBox(std::string value, Transform transform, Options options);
-        ~InputBox() = default;
+        TextBox(std::string value, Transform transform, Options options);
+        ~TextBox() = default;
 
         bool handleEvent(Event event) override;
         void update(float deltaTime) override;
@@ -51,4 +51,4 @@ class InputBox : public AElement {
 
 }
 
-#endif /* INPUTBOX_HPP_ */
+#endif /* TextBox_HPP_ */

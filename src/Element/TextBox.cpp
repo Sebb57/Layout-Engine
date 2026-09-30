@@ -1,15 +1,15 @@
 /**
- * @file InputBox.cpp
+ * @file TextBox.cpp
  * @brief Input Box Class
  *
  * @author SkyReox
  * @date 2026-09-22
 **/
 
-#include "InputBox.hpp"
+#include "TextBox.hpp"
 #include <iostream>
 
-Layout::InputBox::InputBox(std::string value, Transform transform, Options options)
+Layout::TextBox::TextBox(std::string value, Transform transform, Options options)
     : AElement(transform, options), _textTransform(transform), _secondaryColor(options.secondaryColor), _value(value)
 {
     this->_textOptions.primaryColor = Color(255, 255, 255, 255);
@@ -23,7 +23,7 @@ Layout::InputBox::InputBox(std::string value, Transform transform, Options optio
     this->_cursorChrono->reset();
 }
 
-void Layout::InputBox::_updateTransforms()
+void Layout::TextBox::_updateTransforms()
 {
     this->_textTransform = this->transform;
 
@@ -59,7 +59,7 @@ void Layout::InputBox::_updateTransforms()
     this->_textTransform.Size.offsetX = this->transform.Size.offsetY * TEXT_SIZE_MULTIPLIER;
 }
 
-bool Layout::InputBox::handleEvent(Event event)
+bool Layout::TextBox::handleEvent(Event event)
 {
     if (event.type == Event::Type::MouseButtonPressed && event.mouseButton == Event::MouseButton::Left) {
         float w = this->transform.Size.x * this->_windowSize.first + this->transform.Size.offsetX;
@@ -104,7 +104,7 @@ bool Layout::InputBox::handleEvent(Event event)
     return false;
 }
 
-void Layout::InputBox::update(float deltaTime)
+void Layout::TextBox::update(float deltaTime)
 {
     (void) deltaTime;
 
@@ -118,7 +118,7 @@ void Layout::InputBox::update(float deltaTime)
     }
 }
 
-void Layout::InputBox::draw(IGraphic& graphicalLib)
+void Layout::TextBox::draw(IGraphic& graphicalLib)
 {
     this->_windowSize = graphicalLib.getWindowSize();
     this->_updateTransforms();

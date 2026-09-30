@@ -11,16 +11,16 @@
 
 #include "AElement.hpp"
 #include "Slider.hpp"
-#include "InputBox.hpp"
+#include "TextBox.hpp"
 
 namespace Layout {
 
 class ColorPicker : public AElement {
     Slider<float> _darkness;
     Slider<float> _alpha;
-    InputBox _r;
-    InputBox _g;
-    InputBox _b;
+    TextBox _r;
+    TextBox _g;
+    TextBox _b;
 
     void _updateTransforms()
     {
